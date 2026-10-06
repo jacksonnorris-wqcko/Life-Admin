@@ -6,7 +6,7 @@
   "background_color":"#f5f6f1",
   "theme_color":"#176b4d",
   "icons":[
-    {"src":"life-admin-v8-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"life-admin-v8-logo.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    {"src":"./life-admin-v8-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./life-admin-v8-logo.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
