@@ -1,8 +1,8 @@
-# Life Admin V8.1.1 Alpha
+# Life Admin V8.3.3.1 Alpha
 
 A polished local-first personal life-admin app designed for mobile Safari and PWA home-screen use.
 
-## V8.1.1 Alpha
+## V8.3.3.1 Alpha
 - Final visual polish pass for spacing, hierarchy, touch targets and mobile readability.
 - Integrated Life Admin app icon/branding.
 - Forest-green, mint, cream and muted green-grey visual system throughout the app.
