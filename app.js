@@ -118,16 +118,20 @@ function bindCalendarForm(existing){$("#close").onclick=closeModal;$("#cancel").
 function render(){
   $("#userName").textContent=state.name?", "+esc(state.name):"";
   const active=state.items.filter(i=>!i.completed),overdue=active.filter(i=>daysUntil(i.due)<0),soon=active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
-  const outgoing30=sum(active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30));
-  const outgoing365=sum(active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=365));
-  const incoming30=sum(active.filter(i=>i.moneyType==="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30));
-  const incoming365=sum(active.filter(i=>i.moneyType==="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=365));
-  const weeklyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Weekly"));
-  const fortnightlyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Fortnightly"));
-  const monthlyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Monthly"));
-  const annualIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Yearly"));
-  const annualisedIncome=weeklyIncome*52+fortnightlyIncome*26+monthlyIncome*12+annualIncome;
+  const start=today(), end30=new Date(start); end30.setDate(end30.getDate()+30);
+  const end365=new Date(start); end365.setDate(end365.getDate()+365);
+  const outgoing30=projectedSum(active,start,end30,"expense");
+  const outgoing365=projectedSum(active,start,end365,"expense");
+  const incoming30=projectedSum(active,start,end30,"income");
+  const incoming365=projectedSum(active,start,end365,"income");
+  const annualisedIncome=annualisedRecurring(active,"income");
+  const annualisedOutgoing=annualisedRecurring(active,"expense");
   const monthlyEquivalent=annualisedIncome/12;
+  const monthlyOutgoingEquivalent=annualisedOutgoing/12;
+  const weeklyIncome=annualisedIncome/52;
+  const fortnightlyIncome=annualisedIncome/26;
+  const monthlyIncome=annualisedIncome/12;
+  const annualIncome=annualisedIncome;
   const priorityCount=active.filter(i=>i.priority==="urgent"||i.priority==="high").length;
   const score=state.items.length?Math.max(0,Math.round(((active.length-overdue.length)/state.items.length)*100)):100;
   $("#score").textContent=score+"%";$("#ringValue").textContent=score;$("#scoreProgress").style.width=score+"%";$("#scoreRing").style.setProperty("--score",score+"%");$("#scoreText").textContent=score>=90?"Under control":score>=70?"Nearly there":"Needs attention";
@@ -140,6 +144,41 @@ function render(){
   renderAgenda();renderList(filteredItems());installIcons();syncCategoryActive();
 }
 function sum(items){return items.reduce((a,i)=>a+Number(i.cost||0),0)}
+function occurrenceDates(item,start,end){
+  const out=[];
+  let d=dateObj(item.due);
+  if(Number.isNaN(d.getTime())||d>end)return out;
+  if(!item.repeat||item.repeat==="Doesn't repeat"){if(d>=start&&d<=end)out.push(d);return out}
+  let guard=0;
+  while(d<start&&guard++<5000){const n=nextOccurrenceDate(d,item.repeat);if(!n)break;d=n}
+  guard=0;
+  while(d<=end&&guard++<5000){if(d>=start)out.push(new Date(d));const n=nextOccurrenceDate(d,item.repeat);if(!n)break;d=n}
+  return out;
+}
+function projectedSum(items,start,end,kind){
+  return items.reduce((total,item)=>{
+    if(item.completed)return total;
+    if(kind && item.moneyType!==kind)return total;
+    const value=Number(item.cost||0);
+    if(value<=0)return total;
+    return total+occurrenceDates(item,start,end).length*value;
+  },0);
+}
+function annualisedRecurring(items,kind){
+  return items.reduce((total,item)=>{
+    if(item.completed||item.moneyType!==kind)return total;
+    const value=Number(item.cost||0);if(value<=0)return total;
+    const r=item.repeat;
+    if(r==="Daily")return total+value*365;
+    if(r==="Weekly")return total+value*52;
+    if(r==="Fortnightly")return total+value*26;
+    if(r==="Monthly")return total+value*12;
+    if(r==="Every 3 months")return total+value*4;
+    if(r==="Every 6 months")return total+value*2;
+    if(r==="Yearly")return total+value;
+    return total;
+  },0);
+}
 function syncCategoryActive(){$$('.category-chip').forEach(x=>x.classList.toggle('active',x.dataset.category===view.category))}
 function renderAgenda(){
   const limit=view.agenda==="today"?0:7;
