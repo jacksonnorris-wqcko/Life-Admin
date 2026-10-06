@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#f4f6f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Life Admin V6</title>
+<title>Life Admin V7</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="styles.css?v=6002">
+<link rel="stylesheet" href="styles.css?v=7001">
 <style>svg{fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;vector-effect:non-scaling-stroke!important}svg circle,svg rect{fill:none!important}</style>
 </head>
 <body>
@@ -64,6 +64,22 @@
     <section class="cost-card money-card"><div><div><span class="mini-label">UPCOMING COSTS</span><strong id="monthCost">$0</strong></div><span data-icon="chart"></span></div><div class="cost-breakdown"><span><b id="yearCost">$0</b><small>next 12 months</small></span></div></section>
   </div>
 
+  <!-- CALENDAR -->
+  <div class="tab-page" data-tab-panel="calendar" hidden>
+    <section class="calendar-toolbar">
+      <button type="button" class="icon-btn" id="calendarPrev" aria-label="Previous month">‹</button>
+      <div><span class="mini-label">LIFE ADMIN CALENDAR</span><h2 id="calendarMonthTitle">October 2026</h2></div>
+      <button type="button" class="icon-btn" id="calendarNext" aria-label="Next month">›</button>
+    </section>
+    <section class="calendar-card">
+      <div class="calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </section>
+    <section class="calendar-day-head"><div><span class="mini-label">SELECTED DAY</span><h2 id="calendarSelectedTitle">Today</h2></div><button type="button" class="text-btn" id="calendarToday">Today</button></section>
+    <section id="calendarDayList" class="calendar-day-list"></section>
+    <button type="button" class="calendar-add" id="calendarAdd">＋ Add calendar event</button>
+  </div>
+
   <!-- MORE -->
   <div class="tab-page" data-tab-panel="more" hidden>
     <section class="more-menu">
@@ -79,12 +95,13 @@
   <button type="button" class="nav-item active" data-tab="home"><span class="nav-icon" data-icon="home"></span>Home</button>
   <button type="button" class="nav-item" data-tab="items"><span class="nav-icon" data-icon="items"></span>Items</button>
   <button type="button" class="nav-add" id="navAdd" aria-label="Add"><span data-icon="add"></span></button>
+  <button type="button" class="nav-item" data-tab="calendar"><span class="nav-icon" data-icon="calendar"></span>Calendar</button>
   <button type="button" class="nav-item" data-tab="money"><span class="nav-icon" data-icon="money"></span>Money</button>
   <button type="button" class="nav-item" data-tab="more"><span class="nav-icon" data-icon="grid"></span>More</button>
 </nav>
 </div>
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" hidden>
-<script src="app.js?v=6002" defer></script>
+<script src="app.js?v=7001" defer></script>
 </body>
 </html>
