@@ -30,7 +30,14 @@ let state=loadState();
 let view={category:"all",filter:"attention",search:""};
 
 function loadState(){
- try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&Array.isArray(s.items))return s}catch{}
+ try{
+   const s=JSON.parse(localStorage.getItem(STORE));
+   if(s&&Array.isArray(s.items)){
+     s.settings=s.settings||{notifications:false};
+     s.items=s.items.map(i=>({...i,moneyType:i.moneyType||"expense",attachments:i.attachments||[],completed:!!i.completed}));
+     return s;
+   }
+ }catch{}
  return {name:"",items:[],settings:{notifications:false}};
 }
 function save(){localStorage.setItem(STORE,JSON.stringify(state));render()}
@@ -193,21 +200,71 @@ function importData(e){
  const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.items))throw Error();state={name:x.name||"",items:x.items,settings:x.settings||{notifications:false}};save();closeModal();toast("Backup restored")}catch{alert("That file isn't a valid Life Admin backup.")}};r.readAsText(f)
 }
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add("show"));setTimeout(()=>{t.classList.remove("show");setTimeout(()=>t.remove(),220)},1800)}
-$("#addBtn")?.addEventListener("click",()=>openAdd());
-$("#navAdd").onclick=()=>openAdd();
-$("#settingsBtn").onclick=openSettings;
-$("#modalBackdrop").onclick=e=>{if(e.target.id==="modalBackdrop")closeModal()};
-$("#searchInput").oninput=e=>{view.search=e.target.value;$("#clearSearch").classList.toggle("hidden",!view.search);view.filter="all";render()};
-$("#clearSearch").onclick=()=>{$("#searchInput").value="";view.search="";$("#clearSearch").classList.add("hidden");render()};
-document.querySelectorAll(".category-chip").forEach(b=>b.onclick=()=>{document.querySelectorAll(".category-chip").forEach(x=>x.classList.remove("active"));b.classList.add("active");view.category=b.dataset.category;render()});
-document.querySelectorAll(".stat-card").forEach(b=>b.onclick=()=>{view.filter=b.dataset.filter==="all"?"all":b.dataset.filter==="cost"?"cost":b.dataset.filter;render();window.scrollTo({top:250,behavior:"smooth"})});
-$("#viewAllBtn").onclick=()=>{view.filter=view.filter==="attention"?"all":"attention";render()};
-$("#incomingTotal").parentElement.parentElement.onclick=()=>{view.filter="income";render();window.scrollTo({top:250,behavior:"smooth"})};
-document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");
- if(b.dataset.tab==="settings"){openSettings();return}
- if(b.dataset.tab==="items"){view.filter="all";view.category="all";document.querySelectorAll(".category-chip").forEach(x=>x.classList.toggle("active",x.dataset.category==="all"));render();document.querySelector(".section-head").scrollIntoView({behavior:"smooth"});return}
- if(b.dataset.tab==="categories"){view.filter="all";render();document.querySelector(".category-strip").scrollIntoView({behavior:"smooth"});return}
- view.filter="attention";render();window.scrollTo({top:0,behavior:"smooth"});
+// One delegated interaction layer. The UI re-renders often, so handlers live on document
+// rather than on individual buttons that may be replaced.
+document.addEventListener("click",e=>{
+ const close=e.target.closest("#modalBackdrop");
+ if(close && e.target===close){closeModal();return}
+
+ const complete=e.target.closest("[data-complete]");
+ if(complete){e.stopPropagation();toggleComplete(complete.dataset.complete);return}
+
+ const open=e.target.closest("[data-open]");
+ if(open){openDetail(open.dataset.open);return}
+
+ const cat=e.target.closest(".category-chip");
+ if(cat){
+   document.querySelectorAll(".category-chip").forEach(x=>x.classList.remove("active"));
+   cat.classList.add("active");view.category=cat.dataset.category;render();return;
+ }
+
+ const stat=e.target.closest(".stat-card");
+ if(stat){
+   view.filter=stat.dataset.filter||"all";render();window.scrollTo({top:250,behavior:"smooth"});return;
+ }
+
+ const nav=e.target.closest(".nav-item");
+ if(nav){
+   document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
+   nav.classList.add("active");
+   if(nav.dataset.tab==="settings"){openSettings();return}
+   if(nav.dataset.tab==="items"){
+     view.filter="all";view.category="all";
+     document.querySelectorAll(".category-chip").forEach(x=>x.classList.toggle("active",x.dataset.category==="all"));
+     render();document.querySelector(".section-head")?.scrollIntoView({behavior:"smooth"});return;
+   }
+   if(nav.dataset.tab==="categories"){
+     view.filter="all";render();
+     document.querySelector(".category-strip")?.scrollIntoView({behavior:"smooth",block:"center"});return;
+   }
+   view.filter="attention";render();window.scrollTo({top:0,behavior:"smooth"});return;
+ }
+
+ const add=e.target.closest("#navAdd,#addBtn");
+ if(add){openAdd();return}
+
+ const settings=e.target.closest("#settingsBtn");
+ if(settings){openSettings();return}
+
+ const clear=e.target.closest("#clearSearch");
+ if(clear){$("#searchInput").value="";view.search="";clear.classList.add("hidden");render();return}
+
+ const viewAll=e.target.closest("#viewAllBtn");
+ if(viewAll){view.filter=view.filter==="attention"?"all":"attention";render();return}
+
+ const income=e.target.closest(".income-card");
+ if(income){view.filter="income";render();window.scrollTo({top:250,behavior:"smooth"});return}
 });
-installIcons();render();
+
+$("#searchInput").oninput=e=>{
+ view.search=e.target.value;
+ $("#clearSearch").classList.toggle("hidden",!view.search);
+ if(view.search)view.filter="all";
+ render();
+};
+
+function boot(){
+ installIcons();
+ render();
+}
+boot();

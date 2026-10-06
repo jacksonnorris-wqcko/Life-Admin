@@ -1,4 +1,4 @@
-# Life Admin V2.1
+# Life Admin V2.2
 
 Phone-first Life Admin app for GitHub Pages testing.
 
@@ -24,3 +24,5 @@ Phone-first Life Admin app for GitHub Pages testing.
 Upload the files to a repository root and enable Settings → Pages → Deploy from branch → main → / (root).
 
 V2 remains local-first. No account or backend is required.
+
+- Hardened delegated click handling for mobile navigation and dynamic UI.
