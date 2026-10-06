@@ -1,4 +1,4 @@
-# Life Admin V9.3 Alpha
+# Life Admin V9.6 Alpha
 
 # Life Admin V9.3 Alpha
 
@@ -29,3 +29,10 @@ V8.4.2 changes: redesigned the home status card to remove the misleading percent
 - Theme selection lives in Settings → Appearance and applies instantly.
 - Selected theme is stored locally with existing app settings and survives reloads/imports.
 - Semantic status colours remain consistent for overdue, due soon and completed states.
+
+
+## V9.6
+- Deployed the new neutral Life Admin folder/checklist branding across the PWA, browser icon, header and About area.
+- Branding uses charcoal, ivory and soft stone-grey so it remains compatible with all five built-in themes: Forest, Ocean, Slate, Sunset and Lavender.
+- Existing V9.5 functionality and local data storage remain unchanged.
+- Version display is V9.6 Alpha.

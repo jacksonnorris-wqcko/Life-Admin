@@ -1,6 +1,6 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const APP_VERSION="9.5";
+const APP_VERSION="9.6";
 const APP_CHANNEL="Alpha";
 const STORE="lifeAdminV2";
 const ATTENTION_DAYS=0;
