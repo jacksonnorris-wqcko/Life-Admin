@@ -297,3 +297,42 @@ main{padding-bottom:14px !important;}
 
 /* Avoid horizontal overflow from any legacy component. */
 img,svg{max-width:100%;}
+
+
+/* =========================================================
+   V9.0 FINAL NAV GEOMETRY
+   Five positions with a fixed centre track guarantees the +
+   button is geometrically centred on the viewport.
+   ========================================================= */
+.bottom-nav{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 58px minmax(0,1fr) minmax(0,1fr) !important;
+  grid-template-rows:1fr !important;
+  justify-items:stretch !important;
+  align-items:center !important;
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+.bottom-nav .nav-item:nth-child(1){grid-column:1 !important;}
+.bottom-nav .nav-item:nth-child(2){grid-column:2 !important;}
+.bottom-nav .nav-add{grid-column:3 !important;}
+.bottom-nav .nav-item:nth-child(4){grid-column:4 !important;}
+.bottom-nav .nav-item:nth-child(5){grid-column:5 !important;}
+.bottom-nav .nav-add{
+  width:56px !important;
+  height:56px !important;
+  min-width:56px !important;
+  min-height:56px !important;
+  margin:-12px auto 0 !important;
+  transform:none !important;
+}
+.bottom-nav .nav-add:active{
+  transform:translateY(3px) scale(.965) !important;
+}
+@media(max-width:430px){
+  .bottom-nav{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 56px minmax(0,1fr) minmax(0,1fr) !important;}
+  .bottom-nav .nav-add{width:54px !important;height:54px !important;min-width:54px !important;min-height:54px !important;margin:-11px auto 0 !important;}
+}
+@media(max-width:390px){
+  .bottom-nav{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 52px minmax(0,1fr) minmax(0,1fr) !important;}
+  .bottom-nav .nav-add{width:50px !important;height:50px !important;min-width:50px !important;min-height:50px !important;margin:-9px auto 0 !important;}
+}
