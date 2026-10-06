@@ -1,9 +1,9 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const APP_VERSION="9.4";
+const APP_VERSION="9.5";
 const APP_CHANNEL="Alpha";
 const STORE="lifeAdminV2";
-const ATTENTION_DAYS=7;
+const ATTENTION_DAYS=0;
 const SOON_DAYS=14;
 const cats={home:{name:"Home",icon:"home"},car:{name:"Car",icon:"car"},money:{name:"Money",icon:"money"},personal:{name:"Personal",icon:"personal"},family:{name:"Family",icon:"family"},other:{name:"Other",icon:"other"},income:{name:"Income",icon:"income"}};
 const icons={
@@ -77,7 +77,7 @@ function filteredItems(){
   let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);
   const q=view.search.trim().toLowerCase();
   if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));
-  if(view.filter==="attention")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&(daysUntil(i.due)<0||daysUntil(i.due)<=ATTENTION_DAYS||i.priority==="urgent"||i.priority==="high"));
+  if(view.filter==="attention")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&(daysUntil(i.due)<0||daysUntil(i.due)<=ATTENTION_DAYS));
   if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)<0);
   if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=SOON_DAYS);
   if(view.filter==="completed")arr=arr.filter(i=>i.completed);
@@ -187,18 +187,18 @@ function render(){
   const monthlyIncome=annualisedIncome/12;
   const annualIncome=annualisedIncome;
   const priorityCount=active.filter(i=>i.priority==="urgent"||i.priority==="high").length;
-  const attentionSet=new Set([...overdue,...active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS),...active.filter(i=>i.priority==="urgent"||i.priority==="high")].map(i=>i.id));
+  const attentionSet=new Set([...overdue,...active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS)].map(i=>i.id));
   const attentionCount=attentionSet.size;
   const hasItems=state.items.length>0;
   $("#scoreText").textContent=attentionCount?"Needs attention":"All clear";
-  $("#scoreDetail").textContent=attentionCount?`${attentionCount} ${attentionCount===1?"item needs":"items need"} your attention · ${overdue.length} overdue · ${active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS).length} due within ${ATTENTION_DAYS} days`:hasItems?"Nothing needs your attention right now.":"Add something with the + button when you need to.";
+  $("#scoreDetail").textContent=attentionCount?`${attentionCount} ${attentionCount===1?"item needs":"items need"} your attention · ${overdue.length} overdue · ${active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS).length} due today`:hasItems?"Nothing needs your attention right now.":"Add something with the + button when you need to.";
   const badge=$("#statusBadge");
   if(badge){badge.textContent=attentionCount?"!":"✓";badge.classList.toggle("needs-attention",!!attentionCount)}
   $("#overdueCount").textContent=overdue.length;$("#soonCount").textContent=soon.length;$("#completeCount").textContent=completed.length;
   $("#upcomingCost").textContent=money(outgoing30);$("#monthCost").textContent=money(outgoing30);$("#yearCost").textContent=money(outgoing365);$("#incomingTotal").textContent=money(incoming30);$("#weeklyIncome").textContent=money(weeklyIncome);$("#monthlyIncome").textContent=money(monthlyIncome);$("#annualIncome").textContent=money(annualIncome);$("#incomingTotalMoney").textContent=money(incoming30);$("#incomingTotalCard").textContent=money(incoming30);$("#cashInBarLabel").textContent=money(incoming30);$("#cashflowLabelMoney").textContent=incoming30>outgoing30?"More coming in than going out":incoming30<outgoing30?"More going out than coming in":"Evenly matched";$("#itemCount").textContent=filteredItems().length;
   if($("#moneyCentreNet"))renderMoneyCentre(incoming30,outgoing30);if($("#documentsSummary"))renderDocuments();
   const net=incoming30-outgoing30,max=Math.max(incoming30,outgoing30,1);$("#cashflowNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#cashflowLabel").textContent=net>0?"More coming in than going out":net<0?"More going out than coming in":"Evenly matched";$("#cashIn").textContent=money(incoming30);$("#cashOut").textContent=money(outgoing30);$("#inBar").style.width=(incoming30/max*100)+"%";$("#outBar").style.width=(outgoing30/max*100)+"%";
-  const titles={attention:["Needs attention",`Bills and admin due within ${ATTENTION_DAYS} days, overdue, or marked important`],all:["All items","Your life admin in one place"],overdue:["Overdue","Bills and admin that have passed their due date"],soon:["Due soon",`Bills and admin due within ${SOON_DAYS} days`],completed:["Completed","Finished bills, admin and incoming payments"],cost:["Upcoming costs","Outgoing money due soon"],income:["Incoming money","Money coming into your life"]};const t=titles[view.filter]||titles.all;$("#listTitle").textContent=t[0];$("#listSubtitle").textContent=t[1];
+  const titles={attention:["Needs attention",`Bills and admin due today or overdue`],all:["All items","Your life admin in one place"],overdue:["Overdue","Bills and admin that have passed their due date"],soon:["Due soon",`Bills and admin due within ${SOON_DAYS} days`],completed:["Completed","Finished bills, admin and incoming payments"],cost:["Upcoming costs","Outgoing money due soon"],income:["Incoming money","Money coming into your life"]};const t=titles[view.filter]||titles.all;$("#listTitle").textContent=t[0];$("#listSubtitle").textContent=t[1];
   renderAgenda();renderList(filteredItems());installIcons();syncCategoryActive();
 }
 function sum(items){return items.reduce((a,i)=>a+Number(i.cost||0),0)}
