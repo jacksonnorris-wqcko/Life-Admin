@@ -17,3 +17,6 @@ The `assets/` folder contains the Life Admin app icons used by the manifest, bro
 
 ## Alpha testing
 This build is intended for a small family/friends alpha test. Existing local data is retained through the current Life Admin storage key.
+
+
+V8.4.2 changes: redesigned the home status card to remove the misleading percentage score and restored projected incoming/outgoing money calculations while retaining automatic income completion and recurring projections.

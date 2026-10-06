@@ -84,3 +84,6 @@ button{-webkit-tap-highlight-color:transparent}.nav-item,.nav-add,.icon-btn,.sta
   .search-wrap input{font-size:16px;}
   .field input,.field select,.field textarea{font-size:16px;}
 }
+
+/* V8.4.2 status redesign */
+.compact-hero .score-row{margin-top:5px}.compact-hero .score-row strong{font-size:30px}.status-badge{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#dff5ea;color:#197653;font-size:24px;font-weight:900;border:1px solid rgba(25,118,83,.08)}.status-badge.needs-attention{background:#fff0ee;color:#b42318}.compact-hero p{margin-top:16px;margin-bottom:0}.compact-hero .status-badge{flex:0 0 auto}
