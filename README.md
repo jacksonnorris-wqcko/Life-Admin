@@ -18,3 +18,9 @@ Mobile-first Life Admin redesign focused on less scrolling and faster navigation
 - Recurring Life Admin bills and income are projected onto calendar dates automatically.
 - Fortnightly recurrence is supported.
 - Calendar data is stored locally alongside existing Life Admin data and included in export/import backups.
+
+## V8 polish
+- Full UI spacing and hierarchy pass
+- Refined mobile touch targets and bottom navigation
+- Cleaner cards, typography, calendar and money screens
+- Reduced visual density while retaining V7.1 functionality
