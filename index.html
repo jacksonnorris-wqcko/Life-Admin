@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#f4f6f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Life Admin V4</title>
+<title>Life Admin V5</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="styles.css?v=4001">
+<link rel="stylesheet" href="styles.css?v=5001">
 <style>
 svg{fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;vector-effect:non-scaling-stroke!important}
 svg circle,svg rect{fill:none!important}
@@ -64,7 +64,17 @@ svg circle,svg rect{fill:none!important}
     <div class="cashflow-bars"><div><span><b id="cashIn">$0</b><small>Incoming</small></span><i class="bar-track"><em id="inBar"></em></i></div><div><span><b id="cashOut">$0</b><small>Outgoing</small></span><i class="bar-track"><em id="outBar"></em></i></div></div>
   </section>
 
-  <section class="cost-card"><div><div><span class="mini-label">UPCOMING COSTS</span><strong id="upcomingCost">$0</strong></div><span data-icon="chart"></span></div><div class="cost-breakdown"><span><b id="monthCost">$0</b><small>next 30 days</small></span><span><b id="yearCost">$0</b><small>next 12 months</small></span></div></section>
+  <section class="money-centre-card" id="moneyCentre">
+  <div class="section-head compact"><div><span class="mini-label">MONEY CENTRE</span><h2>Next 30 days</h2><p>Incoming, outgoing and what remains.</p></div><button type="button" class="text-btn" id="moneyViewBtn">View details</button></div>
+  <div class="money-summary"><div><small>Incoming</small><b id="moneyCentreIn">$0</b></div><div><small>Outgoing</small><b id="moneyCentreOut">$0</b></div><div class="net"><small>Projected</small><b id="moneyCentreNet">$0</b></div></div>
+  <div class="money-meter"><span id="moneyMeterIn"></span><span id="moneyMeterOut"></span></div>
+</section>
+<section class="documents-card" id="documentsCard">
+  <div class="section-head compact"><div><span class="mini-label">DOCUMENTS</span><h2>Your admin files</h2><p id="documentsSummary">Files attached to your life admin.</p></div><button type="button" class="text-btn" id="documentsBtn">View all</button></div>
+  <div id="documentPreview" class="document-preview"></div>
+</section>
+
+<section class="cost-card"><div><div><span class="mini-label">UPCOMING COSTS</span><strong id="upcomingCost">$0</strong></div><span data-icon="chart"></span></div><div class="cost-breakdown"><span><b id="monthCost">$0</b><small>next 30 days</small></span><span><b id="yearCost">$0</b><small>next 12 months</small></span></div></section>
   <section class="income-card"><div class="income-top"><div><span class="mini-label">INCOMING MONEY</span><strong id="incomingTotal">$0</strong></div><span data-icon="income"></span></div><div class="income-breakdown"><span><b id="weeklyIncome">$0</b><small>weekly</small></span><span><b id="monthlyIncome">$0</b><small>monthly</small></span><span><b id="annualIncome">$0</b><small>annual</small></span></div></section>
 </main>
 
@@ -78,6 +88,6 @@ svg circle,svg rect{fill:none!important}
 </div>
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" hidden>
-<script src="app.js?v=4001" defer></script>
+<script src="app.js?v=5001" defer></script>
 </body>
 </html>

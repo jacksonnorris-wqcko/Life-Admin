@@ -1,22 +1,20 @@
-# Life Admin V4
+# Life Admin V5
 
-A mobile-first, local-first personal admin dashboard designed for GitHub Pages.
+Mobile-first local-first Life Admin dashboard for GitHub Pages.
 
-## V4 highlights
-- Polished mobile dashboard and interaction states
-- Quick Add presets for bills, payday, car and reminders
-- Today / 7-day agenda
-- Snooze items by 1 or 7 days
-- Pin important items
-- 30-day incoming vs outgoing cashflow
-- Recurring items with calendar-aware monthly/yearly progression
-- Search, categories, filters and completion history
-- Attachments, local backup/export/import
-- Browser notification permission request
-- Custom inline SVG icon system designed for Safari/GitHub Pages
+## V5 highlights
+- Smart Today / 7-day agenda
+- Quick Add presets
+- Snooze actions
+- Pinned items
+- Priority levels (Urgent / Important / Normal / Low)
+- 30-day Money Centre with projected net
+- Documents Vault view for all attached files
+- Recurring series IDs preserved across generated occurrences
+- Improved item sorting and attention scoring
+- Safari-safe inline SVG icon styling and cache-busted assets
+- Existing V2/V3/V4 localStorage data is migrated automatically
 
-## Storage
-Data is stored locally in the browser under the existing `lifeAdminV2` key so V2/V3/V3.2 data can carry forward.
-
-## GitHub Pages
-Upload all five files together and hard refresh once after deployment if GitHub Pages is serving an older cached build.
+## Deploy
+Upload the five files in this folder to the root of your GitHub Pages repository.
+Do not clear local browser data when upgrading.
