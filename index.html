@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Life Admin</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">LIFE ADMIN</div>
+      <h1>Good morning<span id="userName"></span> 👋</h1>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙️</button>
+  </header>
+
+  <main>
+    <section class="hero-card">
+      <div class="hero-top">
+        <div>
+          <span class="hero-label">YOUR LIFE ADMIN</span>
+          <div class="score-row"><strong id="score">100%</strong><span id="scoreText">Under control</span></div>
+        </div>
+        <div class="ring" id="scoreRing"><span id="ringValue">100</span></div>
+      </div>
+      <div class="progress"><span id="scoreProgress"></span></div>
+      <p id="scoreDetail">Everything is up to date.</p>
+    </section>
+
+    <section class="quick-grid">
+      <button class="quick-card" data-category="home"><span>🏠</span><b>Home</b><small id="count-home">0 items</small></button>
+      <button class="quick-card" data-category="car"><span>🚗</span><b>Car</b><small id="count-car">0 items</small></button>
+      <button class="quick-card" data-category="money"><span>💰</span><b>Money</b><small id="count-money">0 items</small></button>
+      <button class="quick-card" data-category="personal"><span>📄</span><b>Personal</b><small id="count-personal">0 items</small></button>
+      <button class="quick-card" data-category="family"><span>👨‍👩‍👧</span><b>Family</b><small id="count-family">0 items</small></button>
+      <button class="quick-card" data-category="other"><span>📦</span><b>Other</b><small id="count-other">0 items</small></button>
+    </section>
+
+    <section class="section-head">
+      <div><h2>Needs attention</h2><p>Things coming up soon</p></div>
+      <button class="text-btn" id="viewAllBtn">View all</button>
+    </section>
+    <section id="attentionList" class="item-list"></section>
+
+    <section class="section-head upcoming-head">
+      <div><h2>All items</h2><p>Your life admin in one place</p></div>
+      <button class="add-small" id="addBtn">＋ Add</button>
+    </section>
+    <section id="allList" class="item-list"></section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="home"><span>⌂</span>Home</button>
+    <button class="nav-item" data-tab="items"><span>☷</span>Items</button>
+    <button class="nav-add" id="navAdd">＋</button>
+    <button class="nav-item" data-tab="categories"><span>◈</span>Categories</button>
+    <button class="nav-item" data-tab="settings"><span>⚙</span>Settings</button>
+  </nav>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
