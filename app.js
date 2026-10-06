@@ -46,8 +46,27 @@ function installIcons(){$$('[data-icon]').forEach(el=>{const k=el.dataset.icon;i
 function addMonths(d,n){const x=new Date(d);const day=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n);const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(day,last));return x}
 function addYears(d,n){const x=new Date(d);x.setFullYear(x.getFullYear()+n);return x}
 function nextDue(item){let d=dateObj(item.due),now=today();if(!item.repeat||item.repeat==="Doesn't repeat")return null;while(d<=now){if(item.repeat==="Weekly")d.setDate(d.getDate()+7);else if(item.repeat==="Fortnightly")d.setDate(d.getDate()+14);else if(item.repeat==="Monthly")d=addMonths(d,1);else if(item.repeat==="Every 3 months")d=addMonths(d,3);else if(item.repeat==="Every 6 months")d=addMonths(d,6);else if(item.repeat==="Yearly")d=addYears(d,1);else break}return iso(d)}
-function status(i){if(i.completed)return"complete";const d=daysUntil(i.due);return d<0?"overdue":d<=14?"soon":""}
-function filteredItems(){let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);const q=view.search.trim().toLowerCase();if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&daysUntil(i.due)<0);if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14);if(view.filter==="completed")arr=arr.filter(i=>i.completed);if(view.filter==="cost")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&Number(i.cost)>0&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30);if(view.filter==="income")arr=arr.filter(i=>!i.completed&&i.moneyType==="income"&&Number(i.cost)>0);return arr.sort((a,b)=>{if(a.pinned!==b.pinned)return a.pinned?-1:1;if(priorityRank(a.priority)!==priorityRank(b.priority))return priorityRank(a.priority)-priorityRank(b.priority);if(a.completed!==b.completed)return a.completed?1:-1;return dateObj(a.due)-dateObj(b.due)})}
+function normalizeIncomingItems(){
+  let changed=false;
+  const todayKey=iso(today());
+  const additions=[];
+  state.items.forEach(i=>{
+    if(i.completed||i.moneyType!=="income"||!i.due)return;
+    if(i.due>todayKey)return;
+    i.completed=true;
+    i.completedAt=i.due;
+    changed=true;
+    const next=nextDue(i);
+    if(next){
+      const exists=state.items.some(x=>x.id!==i.id&&x.seriesId===i.seriesId&&x.moneyType==="income"&&!x.completed&&x.due===next);
+      if(!exists)additions.push({...i,id:uid(),due:next,completed:false,completedAt:null,attachments:[],seriesId:i.seriesId||uid()});
+    }
+  });
+  if(additions.length){state.items.push(...additions);changed=true}
+  return changed;
+}
+function status(i){if(i.completed)return"complete";const d=daysUntil(i.due);if(i.moneyType==="income"&&d<=0)return"complete";return d<0?"overdue":d<=14?"soon":""}
+function filteredItems(){let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);const q=view.search.trim().toLowerCase();if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)<0);if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14);if(view.filter==="completed")arr=arr.filter(i=>i.completed);if(view.filter==="cost")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&Number(i.cost)>0&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30);if(view.filter==="income")arr=arr.filter(i=>!i.completed&&i.moneyType==="income"&&Number(i.cost)>0);return arr.sort((a,b)=>{if(a.pinned!==b.pinned)return a.pinned?-1:1;if(priorityRank(a.priority)!==priorityRank(b.priority))return priorityRank(a.priority)-priorityRank(b.priority);if(a.completed!==b.completed)return a.completed?1:-1;return dateObj(a.due)-dateObj(b.due)})}
 function priorityLabel(p){return p==="urgent"?"Urgent":p==="high"?"Important":p==="low"?"Low":"Normal"}
 function priorityRank(p){return p==="urgent"?0:p==="high"?1:p==="normal"?2:3}
 function renderMoneyCentre(incoming,outgoing){const net=incoming-outgoing;$("#moneyCentreIn").textContent=money(incoming);$("#moneyCentreOut").textContent=money(outgoing);$("#moneyCentreNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#moneyCentreNet").className=net>=0?"positive":"negative";const max=Math.max(incoming+outgoing,1);$("#moneyMeterIn").style.width=(incoming/max*100)+"%";$("#moneyMeterOut").style.width=(outgoing/max*100)+"%"}
@@ -116,8 +135,10 @@ function openCalendarEvent(id){const e=(state.events||[]).find(x=>x.id===id);if(
 function openCalendarAdd(){openModal(eventFormHtml({date:calendarView.selected||dateKey(today())}));bindCalendarForm()}
 function bindCalendarForm(existing){$("#close").onclick=closeModal;$("#cancel").onclick=closeModal;$("#calendarForm").onsubmit=ev=>{ev.preventDefault();const data={title:$("#eventTitle").value.trim(),type:$("#eventType").value,date:$("#eventDate").value,time:$("#eventTime").value,repeat:$("#eventRepeat").value,notes:$("#eventNotes").value.trim()};if(!data.title||!data.date)return;if(existing)Object.assign(existing,data);else{state.events=state.events||[];state.events.push({id:uid(),...data,createdAt:new Date().toISOString()})}calendarView.month=dateObj(data.date);calendarView.selected=data.date;closeModal();save();toast(existing?"Event updated":"Event added");renderCalendar()};if(existing)$("#deleteEvent").onclick=()=>{if(confirm("Delete this calendar event?")){state.events=state.events.filter(x=>x.id!==existing.id);closeModal();save();renderCalendar();toast("Event deleted")}}}
 function render(){
+  const incomingChanged=normalizeIncomingItems();
+  if(incomingChanged)localStorage.setItem(STORE,JSON.stringify(state));
   $("#userName").textContent=state.name?", "+esc(state.name):"";
-  const active=state.items.filter(i=>!i.completed),overdue=active.filter(i=>daysUntil(i.due)<0),soon=active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
+  const active=state.items.filter(i=>!i.completed),overdue=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)<0),soon=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
   const start=today(), end30=new Date(start); end30.setDate(end30.getDate()+30);
   const end365=new Date(start); end365.setDate(end365.getDate()+365);
   const outgoing30=projectedSum(active,start,end30,"expense");
