@@ -1,4 +1,4 @@
-# Life Admin V3.1
+# Life Admin V3.2
 
 Phone-first Life Admin app for GitHub Pages testing.
 
@@ -28,12 +28,15 @@ V2 remains local-first. No account or backend is required.
 - Hardened delegated click handling for mobile navigation and dynamic UI.
 
 
-V3.1 FIXES
+V3.2 FIXES
 - Fixed modal backdrop positioning.
 - App startup now waits for DOM readiness.
 - Added cache-busting version to app.js.
 - Added explicit button types for Safari reliability.
-- Preserved V3.1 data format/localStorage compatibility.
+- Preserved V3.2 data format/localStorage compatibility.
 
 
-V3.1 specifically fixes the custom SVG icon rendering: all inline icons now use consistent stroke/fill rules so the Settings cog, Add (+), category icons and navigation icons render correctly in Safari.
+V3.2 specifically fixes the custom SVG icon rendering: all inline icons now use consistent stroke/fill rules so the Settings cog, Add (+), category icons and navigation icons render correctly in Safari.
+
+
+V3.2 specifically fixes Safari icon caching/rendering by versioning both CSS and JS and embedding SVG stroke attributes directly in every icon.
