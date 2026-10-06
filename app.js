@@ -264,7 +264,11 @@ $("#searchInput").oninput=e=>{
 };
 
 function boot(){
- installIcons();
- render();
+  // Wait until the HTML exists. Safari can otherwise race script execution
+  // when the page is restored from its tab/session cache.
+  installIcons();
+  render();
 }
-boot();
+
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, {once:true});
+else boot();

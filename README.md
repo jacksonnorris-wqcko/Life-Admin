@@ -26,3 +26,11 @@ Upload the files to a repository root and enable Settings → Pages → Deploy f
 V2 remains local-first. No account or backend is required.
 
 - Hardened delegated click handling for mobile navigation and dynamic UI.
+
+
+V2.3 FIXES
+- Fixed modal backdrop positioning.
+- App startup now waits for DOM readiness.
+- Added cache-busting version to app.js.
+- Added explicit button types for Safari reliability.
+- Preserved V2.2 data format/localStorage compatibility.

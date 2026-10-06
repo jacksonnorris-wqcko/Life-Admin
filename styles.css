@@ -40,8 +40,12 @@ h1{font-size:26px;line-height:1.1;margin:0;letter-spacing:-.04em}h2{font-size:19
 .income-text{color:var(--good);font-weight:750}.income-card{cursor:pointer}
 
 /* Interaction hardening */
-.topbar,.bottom-nav,.modal-backdrop{position:relative}
 .bottom-nav{position:fixed;z-index:100;pointer-events:auto}
+.modal-backdrop{position:fixed;z-index:200;pointer-events:auto}
 .nav-item,.nav-add,.icon-btn,.stat-card,.category-chip,.check-button,.item-icon,.item-main,.item-date,
 .text-btn,.primary,.secondary,.danger-btn,.close,.clear-search{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .nav-item,.nav-add,.icon-btn,.stat-card,.category-chip{pointer-events:auto}
+
+/* Prevent accidental selection/gesture interference on controls. */
+button{user-select:none;-webkit-user-select:none}
+.modal-backdrop{touch-action:auto}

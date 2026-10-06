@@ -17,7 +17,7 @@
     <div class="eyebrow">LIFE ADMIN</div>
     <h1>Good morning<span id="userName"></span></h1>
   </div>
-  <button class="icon-btn" id="settingsBtn" aria-label="Settings" data-icon="settings"></button>
+  <button type="button" class="icon-btn" id="settingsBtn" aria-label="Settings" data-icon="settings"></button>
 </header>
 
 <main>
@@ -34,11 +34,11 @@
   </section>
 
   <section class="stats-grid">
-    <button class="stat-card" data-filter="overdue"><span class="stat-icon danger" data-icon="warning"></span><b id="overdueCount">0</b><small>Overdue</small></button>
-    <button class="stat-card" data-filter="soon"><span class="stat-icon warning" data-icon="calendar"></span><b id="soonCount">0</b><small>Due soon</small></button>
-    <button class="stat-card" data-filter="all"><span class="stat-icon good" data-icon="check"></span><b id="completeCount">0</b><small>Completed</small></button>
-    <button class="stat-card" data-filter="cost"><span class="stat-icon blue" data-icon="money"></span><b id="costCount">$0</b><small>Outgoing soon</small></button>
-    <button class="stat-card" data-filter="income"><span class="stat-icon income" data-icon="income"></span><b id="incomeCount">$0</b><small>Incoming soon</small></button>
+    <button type="button" class="stat-card" data-filter="overdue"><span class="stat-icon danger" data-icon="warning"></span><b id="overdueCount">0</b><small>Overdue</small></button>
+    <button type="button" class="stat-card" data-filter="soon"><span class="stat-icon warning" data-icon="calendar"></span><b id="soonCount">0</b><small>Due soon</small></button>
+    <button type="button" class="stat-card" data-filter="all"><span class="stat-icon good" data-icon="check"></span><b id="completeCount">0</b><small>Completed</small></button>
+    <button type="button" class="stat-card" data-filter="cost"><span class="stat-icon blue" data-icon="money"></span><b id="costCount">$0</b><small>Outgoing soon</small></button>
+    <button type="button" class="stat-card" data-filter="income"><span class="stat-icon income" data-icon="income"></span><b id="incomeCount">$0</b><small>Incoming soon</small></button>
   </section>
 
   <section class="search-wrap">
@@ -48,19 +48,19 @@
   </section>
 
   <section class="category-strip" id="categoryStrip">
-    <button class="category-chip active" data-category="all"><span data-icon="grid"></span>All</button>
-    <button class="category-chip" data-category="home"><span data-icon="home"></span>Home</button>
-    <button class="category-chip" data-category="car"><span data-icon="car"></span>Car</button>
-    <button class="category-chip" data-category="money"><span data-icon="money"></span>Money</button>
-    <button class="category-chip" data-category="personal"><span data-icon="personal"></span>Personal</button>
-    <button class="category-chip" data-category="family"><span data-icon="family"></span>Family</button>
-    <button class="category-chip" data-category="other"><span data-icon="other"></span>Other</button>
-    <button class="category-chip" data-category="income"><span data-icon="income"></span>Income</button>
+    <button type="button" class="category-chip active" data-category="all"><span data-icon="grid"></span>All</button>
+    <button type="button" class="category-chip" data-category="home"><span data-icon="home"></span>Home</button>
+    <button type="button" class="category-chip" data-category="car"><span data-icon="car"></span>Car</button>
+    <button type="button" class="category-chip" data-category="money"><span data-icon="money"></span>Money</button>
+    <button type="button" class="category-chip" data-category="personal"><span data-icon="personal"></span>Personal</button>
+    <button type="button" class="category-chip" data-category="family"><span data-icon="family"></span>Family</button>
+    <button type="button" class="category-chip" data-category="other"><span data-icon="other"></span>Other</button>
+    <button type="button" class="category-chip" data-category="income"><span data-icon="income"></span>Income</button>
   </section>
 
   <section class="section-head">
     <div><h2 id="listTitle">Needs attention</h2><p id="listSubtitle">Things coming up soon</p></div>
-    <button class="text-btn" id="viewAllBtn">View all</button>
+    <button type="button" class="text-btn" id="viewAllBtn">View all</button>
   </section>
   <section id="itemList" class="item-list"></section>
 
@@ -75,16 +75,16 @@
 </main>
 
 <nav class="bottom-nav">
-  <button class="nav-item active" data-tab="home"><span class="nav-icon" data-icon="home"></span>Home</button>
-  <button class="nav-item" data-tab="items"><span class="nav-icon" data-icon="items"></span>Items</button>
-  <button class="nav-add" id="navAdd" aria-label="Add"><span data-icon="add"></span></button>
-  <button class="nav-item" data-tab="categories"><span class="nav-icon" data-icon="grid"></span>Categories</button>
-  <button class="nav-item" data-tab="settings"><span class="nav-icon" data-icon="settings"></span>Settings</button>
+  <button type="button" class="nav-item active" data-tab="home"><span class="nav-icon" data-icon="home"></span>Home</button>
+  <button type="button" class="nav-item" data-tab="items"><span class="nav-icon" data-icon="items"></span>Items</button>
+  <button type="button" class="nav-add" id="navAdd" aria-label="Add"><span data-icon="add"></span></button>
+  <button type="button" class="nav-item" data-tab="categories"><span class="nav-icon" data-icon="grid"></span>Categories</button>
+  <button type="button" class="nav-item" data-tab="settings"><span class="nav-icon" data-icon="settings"></span>Settings</button>
 </nav>
 </div>
 
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" hidden>
-<script src="app.js"></script>
+<script src="app.js?v=2301" defer></script>
 </body>
 </html>
