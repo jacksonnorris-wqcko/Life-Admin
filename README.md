@@ -1,4 +1,4 @@
-# Life Admin V9.6 Alpha
+# Life Admin V9.7 Alpha
 
 # Life Admin V9.3 Alpha
 
@@ -36,3 +36,11 @@ V8.4.2 changes: redesigned the home status card to remove the misleading percent
 - Branding uses charcoal, ivory and soft stone-grey so it remains compatible with all five built-in themes: Forest, Ocean, Slate, Sunset and Lavender.
 - Existing V9.5 functionality and local data storage remain unchanged.
 - Version display is V9.6 Alpha.
+
+
+## V9.7
+- Added a real local Document Vault using IndexedDB for persistent photos and files.
+- Added document categories: Bills, Receipts, Insurance, Warranties, Personal and Other.
+- Added multi-file upload, optional item linking, image/PDF preview, open-file support and delete.
+- Existing item attachments remain visible in the vault.
+- JSON backups continue to cover Life Admin data; document files remain local to the device for now.
