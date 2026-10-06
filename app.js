@@ -1,3 +1,5 @@
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const STORE="lifeAdminV2";
 const cats={
  home:{name:"Home",icon:"home"},car:{name:"Car",icon:"car"},money:{name:"Money",icon:"money"},
@@ -185,7 +187,7 @@ function openSettings(){
  <div class="setting-row"><div><b>Notifications</b><small>Request browser permission where supported</small></div><button class="toggle ${state.settings.notifications?"on":""}" id="notify"><i></i></button></div>
  <div class="setting-row"><div><b>Backup</b><small>Export your data or restore a previous backup</small></div><div><button class="text-btn" id="export">Export</button> <button class="text-btn" id="import">Import</button></div></div>
  <div class="setting-row"><div><b>Data</b><small>Stored locally on this device/browser</small></div><button class="text-btn" id="clearData">Clear all</button></div>
- <p style="font-size:11px;color:#667085;margin-top:18px">Life Admin V2 · Local-first testing build</p>`);
+ <p style="font-size:11px;color:#667085;margin-top:18px">Life Admin V3 · Local-first testing build</p>`);
  $("#close").onclick=closeModal;
  $("#nameEdit").onclick=()=>{const n=prompt("What should we call you?",state.name);if(n!==null){state.name=n.trim();save();openSettings()}};
  $("#notify").onclick=async()=>{if("Notification" in window){const p=await Notification.requestPermission();state.settings.notifications=p==="granted";save();openSettings()}};

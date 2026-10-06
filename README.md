@@ -1,4 +1,4 @@
-# Life Admin V2.2
+# Life Admin V3
 
 Phone-first Life Admin app for GitHub Pages testing.
 
@@ -28,9 +28,9 @@ V2 remains local-first. No account or backend is required.
 - Hardened delegated click handling for mobile navigation and dynamic UI.
 
 
-V2.3 FIXES
+V3 FIXES
 - Fixed modal backdrop positioning.
 - App startup now waits for DOM readiness.
 - Added cache-busting version to app.js.
 - Added explicit button types for Safari reliability.
-- Preserved V2.2 data format/localStorage compatibility.
+- Preserved V3 data format/localStorage compatibility.
