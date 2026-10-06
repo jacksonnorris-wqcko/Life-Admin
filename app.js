@@ -52,6 +52,29 @@ function priorityRank(p){return p==="urgent"?0:p==="high"?1:p==="normal"?2:3}
 function renderMoneyCentre(incoming,outgoing){const net=incoming-outgoing;$("#moneyCentreIn").textContent=money(incoming);$("#moneyCentreOut").textContent=money(outgoing);$("#moneyCentreNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#moneyCentreNet").className=net>=0?"positive":"negative";const max=Math.max(incoming+outgoing,1);$("#moneyMeterIn").style.width=(incoming/max*100)+"%";$("#moneyMeterOut").style.width=(outgoing/max*100)+"%"}
 function renderDocuments(){const files=[];state.items.forEach(i=>(i.attachments||[]).forEach(a=>files.push({name:a.name,item:i.title,id:i.id,type:a.type||""})));$("#documentsSummary").textContent=files.length?`${files.length} file${files.length===1?"":"s"} attached across your items.`:"No documents attached yet.";$("#documentPreview").innerHTML=files.length?files.slice(0,4).map(f=>`<button type="button" class="document-row" data-open="${f.id}"><span class="document-icon">${icons.paperclip}</span><span><b>${esc(f.name)}</b><small>${esc(f.item)}</small></span><span class="document-arrow">›</span></button>`).join(""):`<div class="document-empty">Attach receipts, policies, warranties and important files to any item.</div>`}
 function openDocuments(){const files=[];state.items.forEach(i=>(i.attachments||[]).forEach((a,n)=>files.push({name:a.name,item:i.title,id:i.id,n,type:a.type||""})));openModal(`<div class="modal-header"><h3>Documents</h3><button type="button" class="close" id="close">${icons.close}</button></div><p class="muted" style="margin-bottom:14px">All files attached to your Life Admin items.</p><div class="document-list">${files.length?files.map(f=>`<button type="button" class="document-row" data-open="${f.id}"><span class="document-icon">${icons.paperclip}</span><span><b>${esc(f.name)}</b><small>${esc(f.item)}</small></span><span class="document-arrow">›</span></button>`).join(""):`<div class="document-empty">No documents yet. Open an item and attach a file.</div>`}</div>`);$("#close").onclick=closeModal}
+
+const tabGroups={
+  home:['.hero-card','.stats-grid','.agenda-card','.cashflow-card','#moneyCentre','#documentsCard','.cost-card','.income-card'],
+  items:['.search-wrap','.section-head','#itemList'],
+  categories:['#categoryStrip','.section-head','#itemList']
+};
+function setupTabs(){
+  const main=document.querySelector('main');
+  if(!main)return;
+  Object.entries(tabGroups).forEach(([tab,selectors])=>selectors.forEach(sel=>{
+    const el=main.querySelector(sel); if(el)el.dataset.tabPanel=tab;
+  }));
+  switchTab('home');
+}
+function switchTab(tab){
+  const target=tab==='settings'?'settings':tab;
+  $$('[data-tab-panel]').forEach(el=>el.hidden=el.dataset.tabPanel!==target);
+  $$('.nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.tab===tab));
+  if(tab==='home'){view.filter='attention';view.category='all';view.search='';if($('#searchInput'))$('#searchInput').value='';render();window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='items'){view.filter='all';view.category='all';render();window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='categories'){view.filter='all';render();window.scrollTo({top:0,behavior:'smooth'});}
+}
+function initTabs(){if(document.body.dataset.tabsReady)return;document.body.dataset.tabsReady='1';setupTabs()}
 function render(){
   $("#userName").textContent=state.name?", "+esc(state.name):"";
   const active=state.items.filter(i=>!i.completed),overdue=active.filter(i=>daysUntil(i.due)<0),soon=active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
@@ -60,8 +83,11 @@ function render(){
   const incoming30=sum(active.filter(i=>i.moneyType==="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30));
   const incoming365=sum(active.filter(i=>i.moneyType==="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=365));
   const weeklyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Weekly"));
+  const fortnightlyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Fortnightly"));
   const monthlyIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Monthly"));
   const annualIncome=sum(active.filter(i=>i.moneyType==="income"&&i.repeat==="Yearly"));
+  const annualisedIncome=weeklyIncome*52+fortnightlyIncome*26+monthlyIncome*12+annualIncome;
+  const monthlyEquivalent=annualisedIncome/12;
   const priorityCount=active.filter(i=>i.priority==="urgent"||i.priority==="high").length;
   const score=state.items.length?Math.max(0,Math.round(((active.length-overdue.length)/state.items.length)*100)):100;
   $("#score").textContent=score+"%";$("#ringValue").textContent=score;$("#scoreProgress").style.width=score+"%";$("#scoreRing").style.setProperty("--score",score+"%");$("#scoreText").textContent=score>=90?"Under control":score>=70?"Nearly there":"Needs attention";
@@ -80,7 +106,7 @@ function renderList(list){const el=$("#itemList");if(!list.length){el.innerHTML=
 function openModal(html){$("#modal").innerHTML=html;$("#modalBackdrop").classList.remove("hidden");installIcons()}
 function closeModal(){$("#modalBackdrop").classList.add("hidden")}
 function categoryOptions(selected){return Object.entries(cats).map(([k,v])=>`<option value="${k}" ${k===selected?"selected":""}>${v.name}</option>`).join("")}
-function repeatOptions(selected){return ["Doesn't repeat","Weekly","Monthly","Every 3 months","Every 6 months","Yearly"].map(x=>`<option ${x===selected?"selected":""}>${x}</option>`).join("")}
+function repeatOptions(selected){return ["Doesn't repeat","Weekly","Fortnightly","Monthly","Every 3 months","Every 6 months","Yearly"].map(x=>`<option ${x===selected?"selected":""}>${x}</option>`).join("")}
 function formHtml(item={},preset="") {const isEdit=!!item.id,due=item.due||iso(today()),p=preset?preset:"";return `<div class="modal-header"><h3>${isEdit?"Edit item":"Add life admin"}</h3><button type="button" class="close" id="close">${icons.close}</button></div>${!isEdit&&!p?`<div class="quick-grid" style="margin-bottom:15px"><button type="button" class="quick-choice" data-preset="bill">${icons.money}<span>Bill</span></button><button type="button" class="quick-choice" data-preset="payday">${icons.income}<span>Payday</span></button><button type="button" class="quick-choice" data-preset="car">${icons.car}<span>Car</span></button><button type="button" class="quick-choice" data-preset="reminder">${icons.calendar}<span>Reminder</span></button></div>`:""}<form id="itemForm"><div class="form-grid"><div class="field"><label>What needs remembering?</label><input id="title" required maxlength="100" value="${esc(item.title)}" placeholder="e.g. Car registration"></div><div class="field"><label>Category</label><select id="category">${categoryOptions(item.category||((p==="payday")?"income":p==="car"?"car":"home"))}</select></div><div class="field"><label>Due date</label><input id="due" type="date" required value="${due}"></div><div class="field"><label>Repeat</label><select id="repeat">${repeatOptions(item.repeat||"Doesn't repeat")}</select></div><div class="field"><label>Priority</label><select id="priority"><option value="urgent" ${item.priority==="urgent"?"selected":""}>Urgent</option><option value="high" ${item.priority==="high"?"selected":""}>Important</option><option value="normal" ${(!item.priority||item.priority==="normal")?"selected":""}>Normal</option><option value="low" ${item.priority==="low"?"selected":""}>Low</option></select></div><div class="field"><label>Money <span class="muted">(optional)</span></label><select id="moneyType"><option value="expense" ${item.moneyType!=="income"?"selected":""}>Outgoing — this costs me money</option><option value="income" ${item.moneyType==="income"?"selected":""}>Incoming — this pays me money</option></select></div><div class="field"><label id="moneyLabel">${item.moneyType==="income"?"Amount coming in":"Amount going out"}</label><input id="cost" type="number" min="0" step="0.01" value="${Number(item.cost||0)||""}" placeholder="0.00"></div><div class="field"><label>Provider / company <span class="muted">(optional)</span></label><input id="provider" maxlength="80" value="${esc(item.provider)}" placeholder="e.g. NRMA"></div><div class="field"><label>Notes <span class="muted">(optional)</span></label><textarea id="notes" maxlength="500" placeholder="Anything worth remembering...">${esc(item.notes)}</textarea></div></div><div class="form-actions">${isEdit?`<button type="button" class="danger-btn" id="delete">${icons.trash} Delete</button>`:""}<button type="button" class="secondary" id="cancel">Cancel</button><button type="submit" class="primary">Save ${isEdit?"changes":"item"}</button></div></form>`}
 function presetData(p){const base={bill:{title:"Bill",category:"money",repeat:"Monthly",moneyType:"expense"},payday:{title:"Payday",category:"income",repeat:"Weekly",moneyType:"income"},car:{title:"Car service",category:"car",repeat:"Yearly",moneyType:"expense"},reminder:{title:"Reminder",category:"personal",repeat:"Doesn't repeat",moneyType:"expense"}}[p]||{};return base}
 function openAdd(preset=""){openModal(formHtml(presetData(preset),preset));bindForm();if(preset){const x=presetData(preset);$("#title").value=x.title;$("#category").value=x.category;$("#repeat").value=x.repeat;$("#moneyType").value=x.moneyType;$("#moneyLabel").textContent=x.moneyType==="income"?"Amount coming in":"Amount going out";$("#title").focus()}}
@@ -105,7 +131,7 @@ function bindGlobal(){document.addEventListener("click",e=>{
   const cat=e.target.closest(".category-chip");if(cat){view.category=cat.dataset.category;view.filter="all";render();return}
   const stat=e.target.closest(".stat-card");if(stat){view.filter=stat.dataset.filter||"all";render();window.scrollTo({top:250,behavior:"smooth"});return}
   const agenda=e.target.closest("[data-agenda]");if(agenda){view.agenda=agenda.dataset.agenda;$$('[data-agenda]').forEach(x=>x.classList.toggle('active',x.dataset.agenda===view.agenda));renderAgenda();return}
-  const nav=e.target.closest(".nav-item");if(nav){$$('.nav-item').forEach(x=>x.classList.remove('active'));nav.classList.add('active');if(nav.dataset.tab==="settings"){openSettings();return}if(nav.dataset.tab==="items"){view.filter="all";view.category="all";render();$(".section-head")?.scrollIntoView({behavior:"smooth"});return}if(nav.dataset.tab==="categories"){$("#categoryStrip").scrollIntoView({behavior:"smooth",block:"center"});return}view.filter="attention";view.category="all";render();window.scrollTo({top:0,behavior:"smooth"});return}
+  const nav=e.target.closest(".nav-item");if(nav){switchTab(nav.dataset.tab);if(nav.dataset.tab==="settings")openSettings();return}
   const add=e.target.closest("#navAdd");if(add){openAdd();return}
   if(e.target.closest("#settingsBtn")){openSettings();return}
   if(e.target.closest("#clearSearch")){$("#searchInput").value="";view.search="";$("#clearSearch").classList.add("hidden");render();return}

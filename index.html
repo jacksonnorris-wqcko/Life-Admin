@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Life Admin V5</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="styles.css?v=5001">
+<link rel="stylesheet" href="styles.css?v=5101">
 <style>
 svg{fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;vector-effect:non-scaling-stroke!important}
 svg circle,svg rect{fill:none!important}
@@ -17,7 +17,7 @@ svg circle,svg rect{fill:none!important}
 <body>
 <div class="app-shell">
 <header class="topbar">
-  <div><div class="eyebrow">LIFE ADMIN</div><h1>Good morning<span id="userName"></span></h1></div>
+  <div><div class="eyebrow" id="tabEyebrow">LIFE ADMIN</div><h1>Good morning<span id="userName"></span></h1></div>
   <button type="button" class="icon-btn" id="settingsBtn" aria-label="Settings" data-icon="settings"></button>
 </header>
 <main>
@@ -75,7 +75,7 @@ svg circle,svg rect{fill:none!important}
 </section>
 
 <section class="cost-card"><div><div><span class="mini-label">UPCOMING COSTS</span><strong id="upcomingCost">$0</strong></div><span data-icon="chart"></span></div><div class="cost-breakdown"><span><b id="monthCost">$0</b><small>next 30 days</small></span><span><b id="yearCost">$0</b><small>next 12 months</small></span></div></section>
-  <section class="income-card"><div class="income-top"><div><span class="mini-label">INCOMING MONEY</span><strong id="incomingTotal">$0</strong></div><span data-icon="income"></span></div><div class="income-breakdown"><span><b id="weeklyIncome">$0</b><small>weekly</small></span><span><b id="monthlyIncome">$0</b><small>monthly</small></span><span><b id="annualIncome">$0</b><small>annual</small></span></div></section>
+  <section class="income-card"><div class="income-top"><div><span class="mini-label">INCOMING MONEY</span><strong id="incomingTotal">$0</strong></div><span data-icon="income"></span></div><div class="income-breakdown"><span><b id="weeklyIncome">$0</b><small>weekly</small></span><span><b id="monthlyIncome">$0</b><small>monthly equiv.</small></span><span><b id="annualIncome">$0</b><small>annual equiv.</small></span></div></section>
 </main>
 
 <nav class="bottom-nav">
@@ -88,6 +88,6 @@ svg circle,svg rect{fill:none!important}
 </div>
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" hidden>
-<script src="app.js?v=5001" defer></script>
+<script src="app.js?v=5101" defer></script>
 </body>
 </html>
