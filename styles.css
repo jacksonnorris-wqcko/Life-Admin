@@ -38,3 +38,13 @@ main{padding:0 16px}
 .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.choice{padding:13px;text-align:left;background:#f7f8fa;border:1px solid var(--line);border-radius:13px;font-weight:700}.choice small{display:block;color:var(--muted);font-weight:500;margin-top:3px}
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row b{font-size:14px}.setting-row small{display:block;color:var(--muted);margin-top:3px}.toggle{width:48px;height:28px;border-radius:20px;background:#d1d5db;padding:3px}.toggle i{display:block;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}.toggle.on{background:var(--accent)}.toggle.on i{transform:translateX(20px)}
 @media(min-width:600px){.topbar{padding-top:32px}.quick-grid{grid-template-columns:repeat(6,1fr)}.modal-backdrop{align-items:center}.modal{border-radius:22px;max-width:520px}}
+
+/* Custom Life Admin icon system */
+svg{width:1em;height:1em;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn svg{width:21px;height:21px;margin:auto}
+.quick-card span svg{width:28px;height:28px}
+.quick-card span{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#eef3ff;color:#315fca}
+.item-icon svg{width:22px;height:22px}
+.item-meta svg{width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:2px}
+.nav-item .nav-icon{font-size:0}.nav-item .nav-icon svg{width:21px;height:21px}
+.nav-add svg{width:23px;height:23px;margin:auto;stroke-width:2.2}

@@ -13,9 +13,9 @@
   <header class="topbar">
     <div>
       <div class="eyebrow">LIFE ADMIN</div>
-      <h1>Good morning<span id="userName"></span> 👋</h1>
+      <h1>Good morning<span id="userName"></span></h1>
     </div>
-    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙️</button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M9.8 3.8h4.4l.6 2a7.7 7.7 0 0 1 1.6.9l2-.6 2.2 3.8-1.5 1.5a7.6 7.6 0 0 1 0 1.9l1.5 1.5-2.2 3.8-2-.6a7.7 7.7 0 0 1-1.6.9l-.6 2H9.8l-.6-2a7.7 7.7 0 0 1-1.6-.9l-2 .6-2.2-3.8L5 13.1a7.6 7.6 0 0 1 0-1.9L3.5 9.7l2.2-3.8 2 .6a7.7 7.7 0 0 1 1.6-.9z"/><circle cx="12" cy="12.1" r="2.6"/></svg></button>
   </header>
 
   <main>
@@ -32,12 +32,12 @@
     </section>
 
     <section class="quick-grid">
-      <button class="quick-card" data-category="home"><span>🏠</span><b>Home</b><small id="count-home">0 items</small></button>
-      <button class="quick-card" data-category="car"><span>🚗</span><b>Car</b><small id="count-car">0 items</small></button>
-      <button class="quick-card" data-category="money"><span>💰</span><b>Money</b><small id="count-money">0 items</small></button>
-      <button class="quick-card" data-category="personal"><span>📄</span><b>Personal</b><small id="count-personal">0 items</small></button>
-      <button class="quick-card" data-category="family"><span>👨‍👩‍👧</span><b>Family</b><small id="count-family">0 items</small></button>
-      <button class="quick-card" data-category="other"><span>📦</span><b>Other</b><small id="count-other">0 items</small></button>
+      <button class="quick-card" data-category="home"><span><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><b>Home</b><small id="count-home">0 items</small></button>
+      <button class="quick-card" data-category="car"><span><svg viewBox="0 0 24 24"><path d="M5 17.5h14l-1-7H6l-1 7Z"/><path d="m7 10.5 1.5-4h7l1.5 4"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span><b>Car</b><small id="count-car">0 items</small></button>
+      <button class="quick-card" data-category="money"><span><svg viewBox="0 0 24 24"><path d="M4 7.5h16v11H4z"/><path d="M7 7.5V5h13v10h-3"/><circle cx="12" cy="13" r="2.5"/></svg></span><b>Money</b><small id="count-money">0 items</small></button>
+      <button class="quick-card" data-category="personal"><span><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M6 15c.8-1.4 4.2-1.4 5 0M14 10h4M14 13h4"/></svg></span><b>Personal</b><small id="count-personal">0 items</small></button>
+      <button class="quick-card" data-category="family"><span><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="2.5"/><circle cx="16" cy="8" r="2"/><path d="M4.5 18c.8-3.5 8.2-3.5 9 0M13 17c.5-2.8 6-2.8 6.5 0"/></svg></span><b>Family</b><small id="count-family">0 items</small></button>
+      <button class="quick-card" data-category="other"><span><svg viewBox="0 0 24 24"><path d="M4 7h6l1.5 2H20v10H4z"/><path d="M4 7V5h6l1.5 2"/></svg></span><b>Other</b><small id="count-other">0 items</small></button>
     </section>
 
     <section class="section-head">
@@ -54,11 +54,11 @@
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-item active" data-tab="home"><span>⌂</span>Home</button>
-    <button class="nav-item" data-tab="items"><span>☷</span>Items</button>
-    <button class="nav-add" id="navAdd">＋</button>
-    <button class="nav-item" data-tab="categories"><span>◈</span>Categories</button>
-    <button class="nav-item" data-tab="settings"><span>⚙</span>Settings</button>
+    <button class="nav-item active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Home</button>
+    <button class="nav-item" data-tab="items"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Items</button>
+    <button class="nav-add" id="navAdd" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="nav-item" data-tab="categories"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-8"/></svg></span>Categories</button>
+    <button class="nav-item" data-tab="settings"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M9.8 3.8h4.4l.6 2a7.7 7.7 0 0 1 1.6.9l2-.6 2.2 3.8-1.5 1.5a7.6 7.6 0 0 1 0 1.9l1.5 1.5-2.2 3.8-2-.6a7.7 7.7 0 0 1-1.6.9l-.6 2H9.8l-.6-2a7.7 7.7 0 0 1-1.6-.9l-2 .6-2.2-3.8L5 13.1a7.6 7.6 0 0 1 0-1.9L3.5 9.7l2.2-3.8 2 .6a7.7 7.7 0 0 1 1.6-.9z"/><circle cx="12" cy="12.1" r="2.6"/></svg></span>Settings</button>
   </nav>
 </div>
 

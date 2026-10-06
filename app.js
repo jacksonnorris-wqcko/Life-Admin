@@ -1,7 +1,17 @@
 const KEY="lifeAdminV1";
+const icons={
+home:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg>`,
+car:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17.5h14l-1-7H6l-1 7Z"/><path d="m7 10.5 1.5-4h7l1.5 4"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg>`,
+money:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h16v11H4z"/><path d="M7 7.5V5h13v10h-3"/><circle cx="12" cy="13" r="2.5"/></svg>`,
+personal:`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M6 15c.8-1.4 4.2-1.4 5 0M14 10h4M14 13h4"/></svg>`,
+family:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="2.5"/><circle cx="16" cy="8" r="2"/><path d="M4.5 18c.8-3.5 8.2-3.5 9 0M13 17c.5-2.8 6-2.8 6.5 0"/></svg>`,
+other:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h6l1.5 2H20v10H4z"/><path d="M4 7V5h6l1.5 2"/></svg>`,
+settings:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.8 3.8h4.4l.6 2a7.7 7.7 0 0 1 1.6.9l2-.6 2.2 3.8-1.5 1.5a7.6 7.6 0 0 1 0 1.9l1.5 1.5-2.2 3.8-2-.6a7.7 7.7 0 0 1-1.6.9l-.6 2H9.8l-.6-2a7.7 7.7 0 0 1-1.6-.9l-2 .6-2.2-3.8L5 13.1a7.6 7.6 0 0 1 0-1.9L3.5 9.7l2.2-3.8 2 .6a7.7 7.7 0 0 1 1.6-.9z"/><circle cx="12" cy="12.1" r="2.6"/></svg>`,
+repeat:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.5 7.5A7 7 0 0 0 6 6l-2 2M4 5v3h3"/><path d="M5.5 16.5A7 7 0 0 0 18 18l2-2M20 19v-3h-3"/></svg>`
+};
 const cats={
- home:{name:"Home",icon:"🏠"},car:{name:"Car",icon:"🚗"},money:{name:"Money",icon:"💰"},
- personal:{name:"Personal",icon:"📄"},family:{name:"Family",icon:"👨‍👩‍👧"},other:{name:"Other",icon:"📦"}
+home:{name:"Home",icon:icons.home},car:{name:"Car",icon:icons.car},money:{name:"Money",icon:icons.money},
+personal:{name:"Personal",icon:icons.personal},family:{name:"Family",icon:icons.family},other:{name:"Other",icon:icons.other}
 };
 let state=JSON.parse(localStorage.getItem(KEY)||'null')||{name:"",items:[]};
 
@@ -30,7 +40,7 @@ function render(){
 function renderList(sel,items,empty){
   const el=$(sel); if(!items.length){el.innerHTML=`<div class="empty">${empty}</div>`;return}
   el.innerHTML=items.map(i=>{const d=daysUntil(i.due),c=cats[i.category]||cats.other;return `<button class="item ${itemStatus(i)}" data-id="${i.id}">
-    <div class="item-icon">${c.icon}</div><div class="item-main"><div class="item-title">${esc(i.title)}</div><div class="item-meta">${c.name}${i.repeat&&i.repeat!=="none"?" · "+i.repeat:""}</div></div>
+    <div class="item-icon">${c.icon}</div><div class="item-main"><div class="item-title">${esc(i.title)}</div><div class="item-meta">${c.name}${i.repeat&&i.repeat!=="none"?" · "+icons.repeat+" "+i.repeat:""}</div></div>
     <div class="item-date"><div class="date-label">${d<0?"Overdue":d<=14?"Coming up":"Due"}</div><div class="date-value">${d<0?Math.abs(d)+"d late":d===0?"Today":d===1?"Tomorrow":formatDate(i.due)}</div></div>
   </button>`}).join("");
   $$(sel+" .item").forEach(x=>x.onclick=()=>openEdit(x.dataset.id));
