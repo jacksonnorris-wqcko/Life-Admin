@@ -1,6 +1,6 @@
-Life Admin V9.1 Alpha
+# Life Admin V9.2 Alpha
 
-# Life Admin V9.1 Alpha
+# Life Admin V9.2 Alpha
 
 A polished local-first personal life-admin app designed for mobile Safari and PWA home-screen use.
 
@@ -22,3 +22,10 @@ This build is intended for a small family/friends alpha test. Existing local dat
 
 
 V8.4.2 changes: redesigned the home status card to remove the misleading percentage score and restored projected incoming/outgoing money calculations while retaining automatic income completion and recurring projections.
+
+
+## V9.2
+- Added five user-selectable colour themes: Forest, Ocean, Slate, Sunset and Lavender.
+- Theme selection lives in Settings → Appearance and applies instantly.
+- Selected theme is stored locally with existing app settings and survives reloads/imports.
+- Semantic status colours remain consistent for overdue, due soon and completed states.
