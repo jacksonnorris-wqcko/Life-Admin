@@ -99,103 +99,201 @@ button{-webkit-tap-highlight-color:transparent}.nav-item,.nav-add,.icon-btn,.sta
 .agenda-event-dot{background:#64748b!important}
 
 
-/* V8.4.6: final mobile navigation — five equal slots, true centred add button. */
+/* =========================================================
+   LIFE ADMIN V9 — FINAL UI REFINEMENT LAYER
+   One authoritative mobile navigation system. The earlier V8
+   navigation patches intentionally remain above for reference,
+   but these rules are the final source of truth.
+   ========================================================= */
+:root{
+  --v9-nav-height:76px;
+  --v9-nav-bg:rgba(255,255,255,.96);
+  --v9-nav-border:rgba(220,225,232,.92);
+  --v9-nav-muted:#7b8490;
+  --v9-nav-active:#176b4d;
+}
+
+html,body{min-height:100%;}
+body{overflow-x:hidden;}
+.app-shell{padding-bottom:calc(var(--v9-nav-height) + env(safe-area-inset-bottom,0px) + 18px);}
+main{padding-bottom:8px;}
+
+/* Header polish */
+.topbar{padding-left:16px;padding-right:16px;}
+.brand-mark{flex:none;}
+.header-actions{gap:8px;}
+.header-actions .icon-btn{display:grid;place-items:center;}
+.header-actions .icon-btn svg{width:21px;height:21px;}
+
+/* Status card: calm, useful, and never presented as a fake score */
+.compact-hero{padding:19px 19px 17px;}
+.compact-hero .score-row strong{font-size:32px;letter-spacing:-.045em;}
+.compact-hero p{font-size:12px;line-height:1.45;color:#cbd5e1;}
+.status-badge{width:50px;height:50px;font-size:25px;}
+
+/* Home stats and cards */
+.stats-grid{gap:9px;}
+.stat-card{transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;}
+.stat-card:active{transform:translateY(1px);}
+.home-tile{transition:transform .14s ease,box-shadow .14s ease;}
+.home-tile:active{transform:translateY(1px);}
+
+/* =========================================================
+   V9 BOTTOM NAVIGATION
+   Exactly five equal columns: Home / Items / + / Calendar / Money.
+   No absolute positioning and no transform-based centering on mobile.
+   ========================================================= */
 .bottom-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:120;
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  align-items:end;
-  justify-items:stretch;
-  width:100%;
-  box-sizing:border-box;
-  height:calc(76px + env(safe-area-inset-bottom));
-  padding:6px 6px env(safe-area-inset-bottom);
-  gap:0;
-  background:rgba(255,255,255,.97);
-  border-top:1px solid rgba(220,225,232,.9);
-  box-shadow:0 -8px 28px rgba(15,23,42,.07);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:none !important;
+  height:calc(var(--v9-nav-height) + env(safe-area-inset-bottom,0px)) !important;
+  padding:5px 6px env(safe-area-inset-bottom,0px) !important;
+  margin:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  grid-template-rows:1fr !important;
+  align-items:center !important;
+  justify-items:stretch !important;
+  gap:0 !important;
+  box-sizing:border-box !important;
+  background:var(--v9-nav-bg) !important;
+  border-top:1px solid var(--v9-nav-border) !important;
+  border-left:0 !important;border-right:0 !important;border-bottom:0 !important;
+  border-radius:0 !important;
+  box-shadow:0 -8px 28px rgba(15,23,42,.065) !important;
+  backdrop-filter:blur(18px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(140%) !important;
+  z-index:100 !important;
 }
 .bottom-nav .nav-item{
-  width:100%;
-  min-width:0;
-  height:58px;
-  padding:5px 2px 4px;
-  margin:0;
-  border:0;
-  background:transparent;
-  color:#7a847d;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-size:11px;
-  font-weight:700;
-  line-height:1;
-  box-sizing:border-box;
+  position:relative !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:100% !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:4px 2px 3px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  background:transparent !important;
+  border:0 !important;
+  color:var(--v9-nav-muted) !important;
+  font-size:9px !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  letter-spacing:.01em !important;
+  text-align:center !important;
+  box-sizing:border-box !important;
+  transform:none !important;
 }
 .bottom-nav .nav-item .nav-icon{
-  width:30px;
-  height:30px;
-  display:grid;
-  place-items:center;
-  border-radius:10px;
-  box-sizing:border-box;
+  width:30px !important;height:27px !important;
+  display:grid !important;place-items:center !important;
+  border-radius:10px !important;
+  background:transparent !important;
+  padding:0 !important;
+  transition:background .16s ease,transform .16s ease !important;
 }
-.bottom-nav .nav-item .nav-icon svg{width:21px;height:21px}
-.bottom-nav .nav-item.active{color:var(--accent)}
-.bottom-nav .nav-item.active .nav-icon{background:var(--accent-soft)}
+.bottom-nav .nav-item .nav-icon svg{
+  width:21px !important;height:21px !important;
+  stroke:currentColor !important;
+  fill:none !important;
+  stroke-width:1.8 !important;
+}
+.bottom-nav .nav-item.active{color:var(--v9-nav-active) !important;}
+.bottom-nav .nav-item.active .nav-icon{background:#edf7f1 !important;}
+.bottom-nav .nav-item:active .nav-icon{transform:scale(.93) !important;}
+
+/* Central action occupies the third grid cell — never floats over another tab. */
 .bottom-nav .nav-add{
-  position:relative;
-  left:auto;
-  top:auto;
-  transform:none;
-  justify-self:center;
-  align-self:start;
-  width:58px;
-  height:58px;
-  margin-top:-15px;
-  padding:0;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:19px;
-  z-index:3;
-  display:grid;
-  place-items:center;
-  box-sizing:border-box;
-  color:#fff;
-  background:linear-gradient(145deg,#218361 0%,#176b4d 62%,#125c42 100%)!important;
+  grid-column:3 !important;
+  grid-row:1 !important;
+  position:relative !important;
+  left:auto !important;top:auto !important;
+  align-self:center !important;
+  justify-self:center !important;
+  width:56px !important;height:56px !important;
+  min-width:56px !important;min-height:56px !important;
+  margin:-15px 0 0 !important;
+  padding:0 !important;
+  border-radius:18px !important;
+  display:grid !important;place-items:center !important;
+  background:linear-gradient(145deg,#1d7d5b 0%,#176b4d 72%) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.22) !important;
   box-shadow:
-    0 13px 22px rgba(23,107,77,.25),
-    0 5px 9px rgba(15,23,42,.14),
-    inset 0 1px 0 rgba(255,255,255,.30),
-    inset 0 -2px 0 rgba(7,54,38,.16)!important;
-  transition:transform .14s ease,box-shadow .14s ease;
+    0 13px 24px rgba(23,107,77,.25),
+    0 4px 8px rgba(15,23,42,.14),
+    inset 0 1px 0 rgba(255,255,255,.28) !important;
+  z-index:4 !important;
+  transition:transform .13s ease,box-shadow .13s ease,filter .13s ease !important;
 }
-.bottom-nav .nav-add span{display:grid;place-items:center}
-.bottom-nav .nav-add svg{width:29px!important;height:29px!important;stroke-width:2.15!important}
+.bottom-nav .nav-add::after{
+  content:"";
+  position:absolute;inset:1px;
+  border-radius:17px;
+  pointer-events:none;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.08);
+}
+.bottom-nav .nav-add svg{
+  width:27px !important;height:27px !important;
+  stroke:currentColor !important;fill:none !important;
+  stroke-width:2.15 !important;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.08));
+}
 .bottom-nav .nav-add:active{
-  transform:translateY(3px);
-  box-shadow:
-    0 6px 11px rgba(23,107,77,.20),
-    0 2px 4px rgba(15,23,42,.10),
-    inset 0 1px 0 rgba(255,255,255,.20),
-    inset 0 -1px 0 rgba(7,54,38,.12)!important;
+  transform:translateY(3px) scale(.965) !important;
+  box-shadow:0 7px 13px rgba(23,107,77,.20),0 2px 5px rgba(15,23,42,.11),inset 0 1px 0 rgba(255,255,255,.20) !important;
 }
-@media(max-width:430px){
-  .bottom-nav{height:calc(76px + env(safe-area-inset-bottom));padding-left:4px;padding-right:4px}
-  .bottom-nav .nav-item{height:58px;font-size:10px}
-  .bottom-nav .nav-item .nav-icon{width:29px;height:29px}
-  .bottom-nav .nav-item .nav-icon svg{width:20px;height:20px}
-  .bottom-nav .nav-add{width:56px;height:56px;margin-top:-14px;border-radius:18px}
-  .bottom-nav .nav-add svg{width:28px!important;height:28px!important}
+
+/* Keep content comfortably above the fixed bar. */
+main{padding-bottom:14px !important;}
+
+/* Calendar / agenda event rows */
+.agenda-item.event-item .agenda-dot{background:#64748b;}
+.agenda-item{min-height:40px;}
+
+/* Money cards: keep figures aligned and readable */
+.money-hero>strong{font-variant-numeric:tabular-nums;}
+.money-small b,.money-card strong,.home-tile b{font-variant-numeric:tabular-nums;}
+
+/* Form controls: preserve iPhone Safari anti-zoom behavior without making every button huge. */
+@media(max-width:600px){
+  input,select,textarea{font-size:16px !important;}
+  .bottom-nav .nav-item{font-size:9px !important;}
 }
+
+/* Desktop/tablet: keep the same five-column geometry but constrain the floating app. */
+@media(min-width:600px){
+  .app-shell{padding-bottom:120px;}
+  .bottom-nav{
+    left:50% !important;right:auto !important;
+    bottom:14px !important;
+    width:min(760px,calc(100% - 28px)) !important;
+    height:72px !important;
+    padding:5px 10px !important;
+    transform:translateX(-50%) !important;
+    border:1px solid var(--line) !important;
+    border-radius:22px !important;
+    box-shadow:0 12px 35px rgba(15,23,42,.12) !important;
+  }
+  .bottom-nav .nav-add{margin-top:-10px !important;}
+}
+
 @media(max-width:390px){
-  .bottom-nav .nav-item{height:56px;font-size:9.5px}
-  .bottom-nav .nav-add{width:54px;height:54px;margin-top:-13px;border-radius:17px}
+  .bottom-nav .nav-add{width:53px !important;height:53px !important;min-width:53px !important;min-height:53px !important;border-radius:17px !important;}
+  .bottom-nav .nav-add::after{border-radius:16px;}
+  .bottom-nav .nav-item .nav-icon{width:28px !important;height:26px !important;}
+  .bottom-nav .nav-item .nav-icon svg{width:20px !important;height:20px !important;}
 }
+
+/* Avoid horizontal overflow from any legacy component. */
+img,svg{max-width:100%;}

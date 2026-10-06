@@ -1,4 +1,4 @@
-# Life Admin V8.3.3.1 Alpha
+# Life Admin V9.3.3.1 Alpha
 
 A polished local-first personal life-admin app designed for mobile Safari and PWA home-screen use.
 
