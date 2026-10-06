@@ -1,4 +1,4 @@
-# Life Admin V2
+# Life Admin V2.1
 
 Phone-first Life Admin app for GitHub Pages testing.
 
@@ -6,13 +6,16 @@ Phone-first Life Admin app for GitHub Pages testing.
 - Custom inline SVG icon system matching the generated Life Admin visual direction
 - Dashboard score and stats
 - Search
+- Working Items / Categories navigation views
 - Category filtering
 - Overdue / due soon / completed / cost filters
 - Complete and reopen items
 - Real recurring item generation on completion
 - Item detail view
-- Notes, provider and optional cost
+- Notes, provider and optional outgoing/incoming money value
 - Local attachments for smaller files
+- Incoming money tracking for wages and other recurring income
+- Weekly recurring income
 - Export/import JSON backup
 - Local browser storage
 - PWA manifest
