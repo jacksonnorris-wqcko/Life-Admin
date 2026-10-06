@@ -212,12 +212,32 @@ function annualisedRecurring(items,kind){
 }
 function syncCategoryActive(){$$('.category-chip').forEach(x=>x.classList.toggle('active',x.dataset.category===view.category))}
 function renderAgenda(){
-  const limit=view.agenda==="today"?0:7;
   const itemList=state.items.filter(i=>!i.completed).filter(i=>{const d=daysUntil(i.due);return view.agenda==="today"?d===0:d>=0&&d<=7}).map(i=>({kind:"item",id:i.id,date:i.due,time:"",title:i.title,moneyType:i.moneyType,cost:i.cost,pinned:i.pinned}));
-  const eventList=(state.events||[]).filter(e=>{const d=daysUntil(e.date);return view.agenda==="today"?d===0:d>=0&&d<=7}).map(e=>({kind:"event",id:e.id,date:e.date,time:e.time||"",title:e.title,eventType:e.type||"event"}));
+  const eventList=[];
+  (state.events||[]).forEach(e=>{
+    const start=dateObj(e.date);
+    if(Number.isNaN(start.getTime()))return;
+    const dates=eventOccurrenceDates(e, today(), new Date(today().getTime()+7*86400000));
+    dates.forEach(d=>{
+      const key=dateKey(d), days=daysUntil(key);
+      if(view.agenda==="today" ? days===0 : days>=0&&days<=7) eventList.push({kind:"event",id:e.id,date:key,time:e.time||"",title:e.title,eventType:e.type||"event",occurrence:key});
+    });
+  });
   const list=[...itemList,...eventList].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6);
-  $("#agendaCount").textContent=list.length?(view.agenda==="today"?`${list.length} on today`:`${list.length} coming up`):view.agenda==="today"?"Nothing due today":"Nothing due this week";
-  $("#agendaList").innerHTML=list.length?list.map(x=>{const d=daysUntil(x.date),amt=x.cost?`<span class="agenda-amount ${x.moneyType==="income"?"income-text":""}">${x.moneyType==="income"?"+":"-"}${money(x.cost)}</span>`:"";const action=x.kind==="item"?`data-open="${x.id}"`:`data-calendar-event="${x.id}"`;const label=x.kind==="item"?(d===0?"Today":d===1?"Tomorrow":formatDate(x.date)):(x.time?`${x.time} · ${x.eventType}`:x.eventType);return `<button type="button" class="agenda-item ${x.kind==="item"?(d<0?"overdue":d<=2?"soon":""):""}" ${action}><span class="agenda-dot ${x.kind==="event"?"agenda-event-dot":""}"></span><span class="agenda-main"><span class="agenda-title">${x.pinned?"★ ":""}${esc(x.title)}</span><span class="agenda-date">${label}</span></span>${amt}</button>`}).join(""):`<div class="agenda-empty">You're clear. Add something with the + button when you need to.</div>`
+  $("#agendaCount").textContent=list.length?(view.agenda==="today"?`${list.length} ${list.length===1?"thing":"things"} today`:`${list.length} coming up`):view.agenda==="today"?"Nothing scheduled today":"Nothing scheduled this week";
+  $("#agendaList").innerHTML=list.length?list.map(x=>{const d=daysUntil(x.date),amt=x.cost?`<span class="agenda-amount ${x.moneyType==="income"?"income-text":""}">${x.moneyType==="income"?"+":"-"}${money(x.cost)}</span>`:"";const action=x.kind==="item"?`data-open="${x.id}"`:`data-calendar-event="${x.id}"`;const label=x.kind==="item"?(d===0?"Today":d===1?"Tomorrow":formatDate(x.date)):(x.time?`${x.time} · ${x.eventType}`:`Calendar · ${x.eventType}`);return `<button type="button" class="agenda-item ${x.kind==="item"?(d<0?"overdue":d<=2?"soon":""):"event-item"}" ${action}><span class="agenda-dot ${x.kind==="event"?"agenda-event-dot":""}"></span><span class="agenda-main"><span class="agenda-title">${x.pinned?"★ ":""}${esc(x.title)}</span><span class="agenda-date">${label}</span></span>${amt}</button>`}).join(""):`<div class="agenda-empty">You're clear. Add something with the + button when you need to.</div>`
+}
+function eventOccurrenceDates(e,start,end){
+  const out=[];
+  let d=dateObj(e.date);
+  if(Number.isNaN(d.getTime()))return out;
+  const repeat=e.repeat||"Doesn't repeat";
+  if(repeat==="Doesn't repeat"){if(d>=start&&d<=end)out.push(new Date(d));return out}
+  let guard=0;
+  while(d<start&&guard++<5000){const n=nextOccurrenceDate(d,repeat);if(!n)break;d=n}
+  guard=0;
+  while(d<=end&&guard++<5000){if(d>=start)out.push(new Date(d));const n=nextOccurrenceDate(d,repeat);if(!n)break;d=n}
+  return out;
 }
 function renderList(list){const el=$("#itemList");if(!list.length){el.innerHTML=`<div class="empty">${view.search?"No items match your search.":view.filter==="attention"?"No upcoming items. Nice work.":"Nothing to show here."}</div>`;return}el.innerHTML=list.map(i=>{const d=daysUntil(i.due),c=cats[i.category]||cats.other,st=status(i),date=i.completed?`Completed ${formatDate(i.completedAt||i.due)}`:d<0?`${Math.abs(d)}d late`:d===0?"Today":d===1?"Tomorrow":formatDate(i.due);return `<div class="item ${st} ${i.pinned?"pinned":""}" data-id="${i.id}"><button type="button" class="check-button" data-complete="${i.id}" aria-label="${i.completed?"Reopen":"Complete"}">${i.completed?icons.check:""}</button><button type="button" class="item-icon" data-open="${i.id}" aria-label="Open ${esc(i.title)}">${iconFor(i.category)}</button><button type="button" class="item-main" data-open="${i.id}"><div class="item-title">${i.pinned?`<span class="pin-mark">★</span> `:""}${priorityRank(i.priority)<2?`<span class="priority-pill ${i.priority}">${priorityLabel(i.priority)}</span> `:""}${esc(i.title)}</div><div class="item-meta"><span>${esc(c.name)}</span>${i.repeat&&i.repeat!=="Doesn't repeat"?`<span>· ${icons.repeat} ${esc(i.repeat)}</span>`:""}${Number(i.cost)>0?`<span class="${i.moneyType==="income"?"income-text":""}">· ${i.moneyType==="income"?"+":"-"}${money(i.cost)}</span>`:""}</div></button><button type="button" class="item-date" data-open="${i.id}"><div class="date-label">${i.completed?"Done":d<0?"Overdue":d<=14?"Coming up":"Due"}</div><div class="date-value">${date}</div></button></div>`}).join("")}
 function openModal(html){$("#modal").innerHTML=html;$("#modalBackdrop").classList.remove("hidden");installIcons()}
@@ -260,7 +280,9 @@ function bindGlobal(){document.addEventListener("click",e=>{
   if(e.target.closest("#calendarAdd")){openCalendarAdd();return}
   const nav=e.target.closest(".nav-item");if(nav){switchTab(nav.dataset.tab);return}
   const add=e.target.closest("#navAdd");if(add){openAdd();return}
-  if(e.target.closest("#settingsBtn")||e.target.closest("#settingsMenuBtn")){openSettings();return}
+  if(e.target.closest("#settingsBtn")){openSettings();return}
+  if(e.target.closest("#moreHeaderBtn")){switchTab("more");return}
+  if(e.target.closest("#settingsMenuBtn")){openSettings();return}
   if(e.target.closest("#exportMenuBtn")){exportData();return}
   if(e.target.closest("#clearSearch")){$("#searchInput").value="";view.search="";$("#clearSearch").classList.add("hidden");render();return}
   if(e.target.closest(".income-card")){view.filter="income";render();window.scrollTo({top:250,behavior:"smooth"});return}

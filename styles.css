@@ -87,3 +87,13 @@ button{-webkit-tap-highlight-color:transparent}.nav-item,.nav-add,.icon-btn,.sta
 
 /* V8.4.2 status redesign */
 .compact-hero .score-row{margin-top:5px}.compact-hero .score-row strong{font-size:30px}.status-badge{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#dff5ea;color:#197653;font-size:24px;font-weight:900;border:1px solid rgba(25,118,83,.08)}.status-badge.needs-attention{background:#fff0ee;color:#b42318}.compact-hero p{margin-top:16px;margin-bottom:0}.compact-hero .status-badge{flex:0 0 auto}
+/* V8.4.3: balanced bottom navigation + header More */
+.header-actions{display:flex;align-items:center;gap:8px}
+.header-actions .icon-btn{flex:none}
+.bottom-nav{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;position:fixed}
+.nav-add{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2}
+.nav-add:active{transform:translate(-50%,-50%) scale(.96)}
+.bottom-nav .nav-item{min-width:0}
+@media(max-width:430px){.header-actions{gap:6px}.header-actions .icon-btn{width:42px;height:42px}.nav-add{width:46px;height:46px}}
+@media(max-width:390px){.nav-add{width:43px;height:43px}}
+.agenda-event-dot{background:#64748b!important}
