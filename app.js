@@ -65,6 +65,7 @@ function normalizeIncomingItems(){
   if(additions.length){state.items.push(...additions);changed=true}
   return changed;
 }
+function updateGreeting(){const el=$("#pageTitle");if(!el)return;const h=new Date().getHours();el.firstChild.nodeValue=h<12?"Good morning":"Good afternoon"}
 function status(i){if(i.completed)return"complete";const d=daysUntil(i.due);if(i.moneyType==="income"&&d<=0)return"complete";return d<0?"overdue":d<=14?"soon":""}
 function filteredItems(){let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);const q=view.search.trim().toLowerCase();if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)<0);if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14);if(view.filter==="completed")arr=arr.filter(i=>i.completed);if(view.filter==="cost")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&Number(i.cost)>0&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30);if(view.filter==="income")arr=arr.filter(i=>!i.completed&&i.moneyType==="income"&&Number(i.cost)>0);return arr.sort((a,b)=>{if(a.pinned!==b.pinned)return a.pinned?-1:1;if(priorityRank(a.priority)!==priorityRank(b.priority))return priorityRank(a.priority)-priorityRank(b.priority);if(a.completed!==b.completed)return a.completed?1:-1;return dateObj(a.due)-dateObj(b.due)})}
 function priorityLabel(p){return p==="urgent"?"Urgent":p==="high"?"Important":p==="low"?"Low":"Normal"}
@@ -138,7 +139,8 @@ function render(){
   const incomingChanged=normalizeIncomingItems();
   if(incomingChanged)localStorage.setItem(STORE,JSON.stringify(state));
   $("#userName").textContent=state.name?", "+esc(state.name):"";
-  const active=state.items.filter(i=>!i.completed),overdue=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)<0),soon=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
+  updateGreeting();
+  const active=state.items.filter(i=>!i.completed&&i.moneyType!=="income"),overdue=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)<0),soon=active.filter(i=>i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14),completed=state.items.filter(i=>i.completed);
   const start=today(), end30=new Date(start); end30.setDate(end30.getDate()+30);
   const end365=new Date(start); end365.setDate(end365.getDate()+365);
   const outgoing30=projectedSum(active,start,end30,"expense");
@@ -257,5 +259,5 @@ function bindGlobal(){document.addEventListener("click",e=>{
   if(e.target.closest("#moneyViewBtn")){switchTab("money");return}
   if(e.target.closest("#documentsBtn")){openDocuments();return}
 });$("#searchInput").addEventListener("input",e=>{view.search=e.target.value;$("#clearSearch").classList.toggle("hidden",!view.search);if(view.search)view.filter="all";render()})}
-function boot(){installIcons();initTabs();bindGlobal();render()}
+function boot(){installIcons();initTabs();bindGlobal();render();updateGreeting();setInterval(updateGreeting,60000)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
