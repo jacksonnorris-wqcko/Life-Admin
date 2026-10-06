@@ -1,26 +1,19 @@
-# Life Admin V8
+# Life Admin V8 Alpha
 
-Mobile-first Life Admin redesign focused on less scrolling and faster navigation.
+A polished local-first personal life-admin app designed for mobile Safari and PWA home-screen use.
 
-## V8 changes
-- Four main destinations: Home, Items, Money, More.
-- Categories are filters inside Items instead of a separate navigation page.
-- Compact Home command centre with status, attention, today/upcoming, and money shortcuts.
-- Dedicated Money centre for cashflow, recurring income and upcoming costs.
-- More menu for documents, settings and backup.
-- Fortnightly recurrence retained.
-- Existing localStorage data key and item structure retained for compatibility with V8.
-- Existing SVG icon system retained with cache-busted assets.
+## V8 Alpha
+- Final visual polish pass for spacing, hierarchy, touch targets and mobile readability.
+- Integrated Life Admin app icon/branding.
+- Forest-green, mint, cream and muted green-grey visual system throughout the app.
+- Local calendar for birthdays, appointments and general events.
+- Existing recurring bills and income appear on the calendar.
+- Fortnightly recurrence supported.
+- Home, Items, Calendar, Money and More navigation.
+- Local storage with export/import backup.
 
+## PWA branding
+The `assets/` folder contains the Life Admin app icons used by the manifest, browser tab and iPhone home-screen installation.
 
-## V8 Calendar
-- Added local in-app calendar for birthdays, appointments and general events.
-- Recurring Life Admin bills and income are projected onto calendar dates automatically.
-- Fortnightly recurrence is supported.
-- Calendar data is stored locally alongside existing Life Admin data and included in export/import backups.
-
-## V8 polish
-- Full UI spacing and hierarchy pass
-- Refined mobile touch targets and bottom navigation
-- Cleaner cards, typography, calendar and money screens
-- Reduced visual density while retaining V8 functionality
+## Alpha testing
+This build is intended for a small family/friends alpha test. Existing local data is retained through the current Life Admin storage key.
