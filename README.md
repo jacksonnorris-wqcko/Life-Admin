@@ -1,28 +1,13 @@
-# Life Admin V5
+# Life Admin V6
 
-Mobile-first local-first Life Admin dashboard for GitHub Pages.
+Mobile-first Life Admin redesign focused on less scrolling and faster navigation.
 
-## V5 highlights
-- Smart Today / 7-day agenda
-- Quick Add presets
-- Snooze actions
-- Pinned items
-- Priority levels (Urgent / Important / Normal / Low)
-- 30-day Money Centre with projected net
-- Documents Vault view for all attached files
-- Recurring series IDs preserved across generated occurrences
-- Improved item sorting and attention scoring
-- Safari-safe inline SVG icon styling and cache-busted assets
-- Existing V2/V3/V4 localStorage data is migrated automatically
-
-## Deploy
-Upload the five files in this folder to the root of your GitHub Pages repository.
-Do not clear local browser data when upgrading.
-
-
-## V5.1
-- Polished tab-based navigation to reduce scrolling.
-- Home, Items and Categories are separate views while Add and Settings remain one tap away.
-- Added Fortnightly recurrence support.
-- Fortnightly income is included in annualised income calculations.
-- Existing V5 localStorage data remains compatible.
+## V6 changes
+- Four main destinations: Home, Items, Money, More.
+- Categories are filters inside Items instead of a separate navigation page.
+- Compact Home command centre with status, attention, today/upcoming, and money shortcuts.
+- Dedicated Money centre for cashflow, recurring income and upcoming costs.
+- More menu for documents, settings and backup.
+- Fortnightly recurrence retained.
+- Existing localStorage data key and item structure retained for compatibility with V5/V5.1.
+- Existing SVG icon system retained with cache-busted assets.

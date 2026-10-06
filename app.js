@@ -53,26 +53,19 @@ function renderMoneyCentre(incoming,outgoing){const net=incoming-outgoing;$("#mo
 function renderDocuments(){const files=[];state.items.forEach(i=>(i.attachments||[]).forEach(a=>files.push({name:a.name,item:i.title,id:i.id,type:a.type||""})));$("#documentsSummary").textContent=files.length?`${files.length} file${files.length===1?"":"s"} attached across your items.`:"No documents attached yet.";$("#documentPreview").innerHTML=files.length?files.slice(0,4).map(f=>`<button type="button" class="document-row" data-open="${f.id}"><span class="document-icon">${icons.paperclip}</span><span><b>${esc(f.name)}</b><small>${esc(f.item)}</small></span><span class="document-arrow">›</span></button>`).join(""):`<div class="document-empty">Attach receipts, policies, warranties and important files to any item.</div>`}
 function openDocuments(){const files=[];state.items.forEach(i=>(i.attachments||[]).forEach((a,n)=>files.push({name:a.name,item:i.title,id:i.id,n,type:a.type||""})));openModal(`<div class="modal-header"><h3>Documents</h3><button type="button" class="close" id="close">${icons.close}</button></div><p class="muted" style="margin-bottom:14px">All files attached to your Life Admin items.</p><div class="document-list">${files.length?files.map(f=>`<button type="button" class="document-row" data-open="${f.id}"><span class="document-icon">${icons.paperclip}</span><span><b>${esc(f.name)}</b><small>${esc(f.item)}</small></span><span class="document-arrow">›</span></button>`).join(""):`<div class="document-empty">No documents yet. Open an item and attach a file.</div>`}</div>`);$("#close").onclick=closeModal}
 
-const tabGroups={
-  home:['.hero-card','.stats-grid','.agenda-card','.cashflow-card','#moneyCentre','#documentsCard','.cost-card','.income-card'],
-  items:['.search-wrap','.section-head','#itemList'],
-  categories:['#categoryStrip','.section-head','#itemList']
-};
-function setupTabs(){
-  const main=document.querySelector('main');
-  if(!main)return;
-  Object.entries(tabGroups).forEach(([tab,selectors])=>selectors.forEach(sel=>{
-    const el=main.querySelector(sel); if(el)el.dataset.tabPanel=tab;
-  }));
-  switchTab('home');
-}
+function setupTabs(){switchTab("home")}
 function switchTab(tab){
-  const target=tab==='settings'?'settings':tab;
+  const target=tab;
   $$('[data-tab-panel]').forEach(el=>el.hidden=el.dataset.tabPanel!==target);
   $$('.nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.tab===tab));
-  if(tab==='home'){view.filter='attention';view.category='all';view.search='';if($('#searchInput'))$('#searchInput').value='';render();window.scrollTo({top:0,behavior:'smooth'});}
-  if(tab==='items'){view.filter='all';view.category='all';render();window.scrollTo({top:0,behavior:'smooth'});}
-  if(tab==='categories'){view.filter='all';render();window.scrollTo({top:0,behavior:'smooth'});}
+  const titles={home:"Good morning",items:"Your items",money:"Money centre",more:"More"};
+  if($('#tabEyebrow'))$('#tabEyebrow').textContent=tab==="home"?"LIFE ADMIN":tab.toUpperCase();
+  if($('#pageTitle'))$('#pageTitle').firstChild.textContent=titles[tab]||"Life Admin";
+  if(tab==='home'){view.filter='attention';view.category='all';view.search='';if($('#searchInput'))$('#searchInput').value='';render();}
+  if(tab==='items'){view.filter='all';render();}
+  if(tab==='money'){view.filter='all';render();}
+  if(tab==='more'){render();}
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function initTabs(){if(document.body.dataset.tabsReady)return;document.body.dataset.tabsReady='1';setupTabs()}
 function render(){
@@ -93,8 +86,8 @@ function render(){
   $("#score").textContent=score+"%";$("#ringValue").textContent=score;$("#scoreProgress").style.width=score+"%";$("#scoreRing").style.setProperty("--score",score+"%");$("#scoreText").textContent=score>=90?"Under control":score>=70?"Nearly there":"Needs attention";
   $("#scoreDetail").textContent=state.items.length?`${overdue.length} overdue · ${priorityCount} high priority · ${soon.length} due within 14 days` :"Nothing added yet — you're all caught up.";
   $("#overdueCount").textContent=overdue.length;$("#soonCount").textContent=soon.length;$("#completeCount").textContent=completed.length;$("#costCount").textContent=money(outgoing30);$("#incomeCount").textContent=money(incoming30);
-  $("#upcomingCost").textContent=money(outgoing30);$("#monthCost").textContent=money(outgoing30);$("#yearCost").textContent=money(outgoing365);$("#incomingTotal").textContent=money(incoming30);$("#weeklyIncome").textContent=money(weeklyIncome);$("#monthlyIncome").textContent=money(monthlyIncome);$("#annualIncome").textContent=money(annualIncome);
-  renderMoneyCentre(incoming30,outgoing30);renderDocuments();
+  $("#upcomingCost").textContent=money(outgoing30);$("#monthCost").textContent=money(outgoing30);$("#yearCost").textContent=money(outgoing365);$("#incomingTotal").textContent=money(incoming30);$("#weeklyIncome").textContent=money(weeklyIncome);$("#monthlyIncome").textContent=money(monthlyIncome);$("#annualIncome").textContent=money(annualIncome);$("#incomingTotalMoney").textContent=money(incoming30);$("#incomingTotalCard").textContent=money(incoming30);$("#cashInBarLabel").textContent=money(incoming30);$("#cashflowLabelMoney").textContent=incoming30>outgoing30?"More coming in than going out":incoming30<outgoing30?"More going out than coming in":"Evenly matched";$("#itemCount").textContent=filteredItems().length;
+  renderMoneyCentre(incoming30,outgoing30);if($("#documentsSummary"))renderDocuments();
   const net=incoming30-outgoing30,max=Math.max(incoming30,outgoing30,1);$("#cashflowNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#cashflowLabel").textContent=net>0?"More coming in than going out":net<0?"More going out than coming in":"Evenly matched";$("#cashIn").textContent=money(incoming30);$("#cashOut").textContent=money(outgoing30);$("#inBar").style.width=(incoming30/max*100)+"%";$("#outBar").style.width=(outgoing30/max*100)+"%";
   const titles={attention:["Needs attention","Things coming up soon"],all:["All items","Your life admin in one place"],overdue:["Overdue","These need your attention"],soon:["Due soon","The next 14 days"],completed:["Completed","Finished life admin"],cost:["Upcoming costs","Outgoing money due soon"],income:["Incoming money","Money coming into your life"]};const t=titles[view.filter]||titles.all;$("#listTitle").textContent=t[0];$("#listSubtitle").textContent=t[1];$("#viewAllBtn").textContent=view.filter==="attention"?"View all":"Reset";
   renderAgenda();renderList(filteredItems());installIcons();syncCategoryActive();
@@ -131,14 +124,19 @@ function bindGlobal(){document.addEventListener("click",e=>{
   const cat=e.target.closest(".category-chip");if(cat){view.category=cat.dataset.category;view.filter="all";render();return}
   const stat=e.target.closest(".stat-card");if(stat){view.filter=stat.dataset.filter||"all";render();window.scrollTo({top:250,behavior:"smooth"});return}
   const agenda=e.target.closest("[data-agenda]");if(agenda){view.agenda=agenda.dataset.agenda;$$('[data-agenda]').forEach(x=>x.classList.toggle('active',x.dataset.agenda===view.agenda));renderAgenda();return}
-  const nav=e.target.closest(".nav-item");if(nav){switchTab(nav.dataset.tab);if(nav.dataset.tab==="settings")openSettings();return}
+  const itemFilter=e.target.closest("[data-item-filter]");if(itemFilter){view.filter=itemFilter.dataset.itemFilter;render();return}
+  const homeAll=e.target.closest("#homeViewAll");if(homeAll){switchTab("items");return}
+  const homeMoney=e.target.closest("#homeMoney");if(homeMoney){switchTab("money");return}
+  const homeIncome=e.target.closest("#homeIncome");if(homeIncome){switchTab("money");return}
+  const nav=e.target.closest(".nav-item");if(nav){switchTab(nav.dataset.tab);return}
   const add=e.target.closest("#navAdd");if(add){openAdd();return}
-  if(e.target.closest("#settingsBtn")){openSettings();return}
+  if(e.target.closest("#settingsBtn")||e.target.closest("#settingsMenuBtn")){openSettings();return}
+  if(e.target.closest("#exportMenuBtn")){exportData();return}
   if(e.target.closest("#clearSearch")){$("#searchInput").value="";view.search="";$("#clearSearch").classList.add("hidden");render();return}
   if(e.target.closest("#viewAllBtn")){view.filter=view.filter==="attention"?"all":"attention";render();return}
   if(e.target.closest(".income-card")){view.filter="income";render();window.scrollTo({top:250,behavior:"smooth"});return}
   if(e.target.closest("#moneyViewBtn")){view.category="money";view.filter="all";render();$("#moneyCentre").scrollIntoView({behavior:"smooth"});return}
   if(e.target.closest("#documentsBtn")){openDocuments();return}
 });$("#searchInput").addEventListener("input",e=>{view.search=e.target.value;$("#clearSearch").classList.toggle("hidden",!view.search);if(view.search)view.filter="all";render()})}
-function boot(){installIcons();bindGlobal();render()}
+function boot(){installIcons();initTabs();bindGlobal();render()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
