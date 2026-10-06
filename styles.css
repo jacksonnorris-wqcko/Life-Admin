@@ -468,3 +468,10 @@ body,.bottom-nav,.modal,.icon-btn,.stat-card,.agenda-card,.home-tile,.item,.cale
 .item.pinned{border-color:var(--accent)!important;box-shadow:0 5px 16px color-mix(in srgb,var(--accent) 9%,transparent)!important;}
 .theme-card.selected{border-color:var(--accent)!important;box-shadow:0 0 0 2px var(--accent-soft)!important;}
 /* Theme previews are deliberately explicit so each preview remains true to its palette. */
+
+/* V9.4 interactive status navigation */
+.hero-card[role="button"]{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}
+.hero-card[role="button"]:hover{transform:translateY(-1px)}
+.hero-card[role="button"]:active{transform:translateY(1px) scale(.995)}
+.hero-card[role="button"]:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.stat-card{cursor:pointer}

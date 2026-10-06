@@ -1,8 +1,10 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const APP_VERSION="9.3";
+const APP_VERSION="9.4";
 const APP_CHANNEL="Alpha";
 const STORE="lifeAdminV2";
+const ATTENTION_DAYS=7;
+const SOON_DAYS=14;
 const cats={home:{name:"Home",icon:"home"},car:{name:"Car",icon:"car"},money:{name:"Money",icon:"money"},personal:{name:"Personal",icon:"personal"},family:{name:"Family",icon:"family"},other:{name:"Other",icon:"other"},income:{name:"Income",icon:"income"}};
 const icons={
 home:`<svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg>`,
@@ -70,8 +72,29 @@ function normalizeIncomingItems(){
   return changed;
 }
 function updateGreeting(){const el=$("#pageTitle");if(!el)return;const h=new Date().getHours();el.firstChild.nodeValue=h<12?"Good morning":"Good afternoon"}
-function status(i){if(i.completed)return"complete";const d=daysUntil(i.due);if(i.moneyType==="income"&&d<=0)return"complete";return d<0?"overdue":d<=14?"soon":""}
-function filteredItems(){let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);const q=view.search.trim().toLowerCase();if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)<0);if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&daysUntil(i.due)>=0&&daysUntil(i.due)<=14);if(view.filter==="completed")arr=arr.filter(i=>i.completed);if(view.filter==="cost")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&Number(i.cost)>0&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30);if(view.filter==="income")arr=arr.filter(i=>!i.completed&&i.moneyType==="income"&&Number(i.cost)>0);return arr.sort((a,b)=>{if(a.pinned!==b.pinned)return a.pinned?-1:1;if(priorityRank(a.priority)!==priorityRank(b.priority))return priorityRank(a.priority)-priorityRank(b.priority);if(a.completed!==b.completed)return a.completed?1:-1;return dateObj(a.due)-dateObj(b.due)})}
+function status(i){if(i.completed)return"complete";const d=daysUntil(i.due);if(i.moneyType==="income"&&d<=0)return"complete";return d<0?"overdue":d<=SOON_DAYS?"soon":""}
+function filteredItems(){
+  let arr=state.items.filter(i=>view.category==="all"||i.category===view.category);
+  const q=view.search.trim().toLowerCase();
+  if(q)arr=arr.filter(i=>[i.title,i.notes,i.provider,i.category].join(" ").toLowerCase().includes(q));
+  if(view.filter==="attention")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&(daysUntil(i.due)<0||daysUntil(i.due)<=ATTENTION_DAYS||i.priority==="urgent"||i.priority==="high"));
+  if(view.filter==="overdue")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)<0);
+  if(view.filter==="soon")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&daysUntil(i.due)>=0&&daysUntil(i.due)<=SOON_DAYS);
+  if(view.filter==="completed")arr=arr.filter(i=>i.completed);
+  if(view.filter==="cost")arr=arr.filter(i=>!i.completed&&i.moneyType!=="income"&&Number(i.cost)>0&&daysUntil(i.due)>=0&&daysUntil(i.due)<=30);
+  if(view.filter==="income")arr=arr.filter(i=>!i.completed&&i.moneyType==="income"&&Number(i.cost)>0);
+  return arr.sort((a,b)=>{
+    if(view.filter==="completed")return new Date(b.completedAt||b.due)-new Date(a.completedAt||a.due);
+    if(view.filter==="attention"||view.filter==="overdue"||view.filter==="soon"){
+      const pa=priorityRank(a.priority),pb=priorityRank(b.priority); if(pa!==pb)return pa-pb;
+      return dateObj(a.due)-dateObj(b.due);
+    }
+    if(a.pinned!==b.pinned)return a.pinned?-1:1;
+    if(priorityRank(a.priority)!==priorityRank(b.priority))return priorityRank(a.priority)-priorityRank(b.priority);
+    if(a.completed!==b.completed)return a.completed?1:-1;
+    return dateObj(a.due)-dateObj(b.due)
+  })
+}
 function priorityLabel(p){return p==="urgent"?"Urgent":p==="high"?"Important":p==="low"?"Low":"Normal"}
 function priorityRank(p){return p==="urgent"?0:p==="high"?1:p==="normal"?2:3}
 function renderMoneyCentre(incoming,outgoing){const net=incoming-outgoing;$("#moneyCentreIn").textContent=money(incoming);$("#moneyCentreOut").textContent=money(outgoing);$("#moneyCentreNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#moneyCentreNet").className=net>=0?"positive":"negative";const max=Math.max(incoming+outgoing,1);$("#moneyMeterIn").style.width=(incoming/max*100)+"%";$("#moneyMeterOut").style.width=(outgoing/max*100)+"%"}
@@ -79,7 +102,7 @@ function renderDocuments(){const files=[];state.items.forEach(i=>(i.attachments|
 function openDocuments(){const files=[];state.items.forEach(i=>(i.attachments||[]).forEach((a,n)=>files.push({name:a.name,item:i.title,id:i.id,n,type:a.type||""})));openModal(`<div class="modal-header"><h3>Documents</h3><button type="button" class="close" id="close">${icons.close}</button></div><p class="muted" style="margin-bottom:14px">All files attached to your Life Admin items.</p><div class="document-list">${files.length?files.map(f=>`<button type="button" class="document-row" data-open="${f.id}"><span class="document-icon">${icons.paperclip}</span><span><b>${esc(f.name)}</b><small>${esc(f.item)}</small></span><span class="document-arrow">›</span></button>`).join(""):`<div class="document-empty">No documents yet. Open an item and attach a file.</div>`}</div>`);$("#close").onclick=closeModal}
 
 function setupTabs(){switchTab("home")}
-function switchTab(tab){
+function switchTab(tab,filter=null){
   const target=tab;
   $$('[data-tab-panel]').forEach(el=>el.hidden=el.dataset.tabPanel!==target);
   $$('.nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.tab===tab));
@@ -87,7 +110,7 @@ function switchTab(tab){
   if($('#tabEyebrow'))$('#tabEyebrow').textContent=tab==="home"?"LIFE ADMIN":tab.toUpperCase();
   if($('#pageTitle'))$('#pageTitle').firstChild.textContent=titles[tab]||"Life Admin";
   if(tab==='home'){view.filter='attention';view.category='all';view.search='';if($('#searchInput'))$('#searchInput').value='';render();}
-  if(tab==='items'){view.filter='all';render();}
+  if(tab==='items'){view.filter=filter||'all';view.category='all';view.search='';if($('#searchInput'))$('#searchInput').value='';render();}
   if(tab==='calendar'){view.filter='all';renderCalendar();}
   if(tab==='money'){view.filter='all';render();}
   if(tab==='more'){render();}
@@ -147,7 +170,7 @@ function render(){
   const active=state.items.filter(i=>!i.completed&&i.moneyType!=="income");
   const activeMoney=state.items.filter(i=>!i.completed);
   const overdue=active.filter(i=>daysUntil(i.due)<0);
-  const soon=active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=14);
+  const soon=active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=SOON_DAYS);
   const completed=state.items.filter(i=>i.completed);
   const start=today(), end30=new Date(start); end30.setDate(end30.getDate()+30);
   const end365=new Date(start); end365.setDate(end365.getDate()+365);
@@ -164,18 +187,18 @@ function render(){
   const monthlyIncome=annualisedIncome/12;
   const annualIncome=annualisedIncome;
   const priorityCount=active.filter(i=>i.priority==="urgent"||i.priority==="high").length;
-  const attentionSet=new Set([...overdue,...soon,...active.filter(i=>i.priority==="urgent"||i.priority==="high")].map(i=>i.id));
+  const attentionSet=new Set([...overdue,...active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS),...active.filter(i=>i.priority==="urgent"||i.priority==="high")].map(i=>i.id));
   const attentionCount=attentionSet.size;
   const hasItems=state.items.length>0;
   $("#scoreText").textContent=attentionCount?"Needs attention":"All clear";
-  $("#scoreDetail").textContent=attentionCount?`${attentionCount} ${attentionCount===1?"item needs":"items need"} your attention · ${overdue.length} overdue · ${soon.length} due within 14 days`:hasItems?"Nothing needs your attention right now.":"Add something with the + button when you need to.";
+  $("#scoreDetail").textContent=attentionCount?`${attentionCount} ${attentionCount===1?"item needs":"items need"} your attention · ${overdue.length} overdue · ${active.filter(i=>daysUntil(i.due)>=0&&daysUntil(i.due)<=ATTENTION_DAYS).length} due within ${ATTENTION_DAYS} days`:hasItems?"Nothing needs your attention right now.":"Add something with the + button when you need to.";
   const badge=$("#statusBadge");
   if(badge){badge.textContent=attentionCount?"!":"✓";badge.classList.toggle("needs-attention",!!attentionCount)}
   $("#overdueCount").textContent=overdue.length;$("#soonCount").textContent=soon.length;$("#completeCount").textContent=completed.length;
   $("#upcomingCost").textContent=money(outgoing30);$("#monthCost").textContent=money(outgoing30);$("#yearCost").textContent=money(outgoing365);$("#incomingTotal").textContent=money(incoming30);$("#weeklyIncome").textContent=money(weeklyIncome);$("#monthlyIncome").textContent=money(monthlyIncome);$("#annualIncome").textContent=money(annualIncome);$("#incomingTotalMoney").textContent=money(incoming30);$("#incomingTotalCard").textContent=money(incoming30);$("#cashInBarLabel").textContent=money(incoming30);$("#cashflowLabelMoney").textContent=incoming30>outgoing30?"More coming in than going out":incoming30<outgoing30?"More going out than coming in":"Evenly matched";$("#itemCount").textContent=filteredItems().length;
   if($("#moneyCentreNet"))renderMoneyCentre(incoming30,outgoing30);if($("#documentsSummary"))renderDocuments();
   const net=incoming30-outgoing30,max=Math.max(incoming30,outgoing30,1);$("#cashflowNet").textContent=(net>=0?"+":"-")+money(Math.abs(net));$("#cashflowLabel").textContent=net>0?"More coming in than going out":net<0?"More going out than coming in":"Evenly matched";$("#cashIn").textContent=money(incoming30);$("#cashOut").textContent=money(outgoing30);$("#inBar").style.width=(incoming30/max*100)+"%";$("#outBar").style.width=(outgoing30/max*100)+"%";
-  const titles={attention:["Needs attention","Things coming up soon"],all:["All items","Your life admin in one place"],overdue:["Overdue","These need your attention"],soon:["Due soon","The next 14 days"],completed:["Completed","Finished life admin"],cost:["Upcoming costs","Outgoing money due soon"],income:["Incoming money","Money coming into your life"]};const t=titles[view.filter]||titles.all;$("#listTitle").textContent=t[0];$("#listSubtitle").textContent=t[1];
+  const titles={attention:["Needs attention",`Bills and admin due within ${ATTENTION_DAYS} days, overdue, or marked important`],all:["All items","Your life admin in one place"],overdue:["Overdue","Bills and admin that have passed their due date"],soon:["Due soon",`Bills and admin due within ${SOON_DAYS} days`],completed:["Completed","Finished bills, admin and incoming payments"],cost:["Upcoming costs","Outgoing money due soon"],income:["Incoming money","Money coming into your life"]};const t=titles[view.filter]||titles.all;$("#listTitle").textContent=t[0];$("#listSubtitle").textContent=t[1];
   renderAgenda();renderList(filteredItems());installIcons();syncCategoryActive();
 }
 function sum(items){return items.reduce((a,i)=>a+Number(i.cost||0),0)}
@@ -214,7 +237,7 @@ function annualisedRecurring(items,kind){
     return total;
   },0);
 }
-function syncCategoryActive(){$$('.category-chip').forEach(x=>x.classList.toggle('active',x.dataset.category===view.category))}
+function syncCategoryActive(){$$('.category-chip').forEach(x=>x.classList.toggle('active',x.dataset.category===view.category));$$('[data-item-filter]').forEach(x=>x.classList.toggle('active',x.dataset.itemFilter===view.filter))}
 function renderAgenda(){
   const itemList=state.items.filter(i=>!i.completed).filter(i=>{const d=daysUntil(i.due);return view.agenda==="today"?d===0:d>=0&&d<=7}).map(i=>({kind:"item",id:i.id,date:i.due,time:"",title:i.title,moneyType:i.moneyType,cost:i.cost,pinned:i.pinned}));
   const eventList=[];
@@ -262,7 +285,7 @@ function openSettings(){const theme=state.settings.theme||"forest";const cards=O
 function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="life-admin-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),500);toast("Backup exported")}
 function importData(e){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.items))throw Error();state={name:x.name||"",items:x.items.map(i=>({...i,pinned:!!i.pinned,priority:i.priority||"normal",seriesId:i.seriesId||null,attachments:i.attachments||[],completed:!!i.completed})),events:Array.isArray(x.events)?x.events:[],settings:{notifications:false,theme:"forest",...(x.settings||{})}};applyTheme(state.settings.theme);save();closeModal();toast("Backup restored")}catch{alert("That file isn't a valid Life Admin backup.")}};r.readAsText(f)}
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add("show"));setTimeout(()=>{t.classList.remove("show");setTimeout(()=>t.remove(),220)},1800)}
-function bindGlobal(){document.addEventListener("click",e=>{
+function bindGlobal(){document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest(".hero-card[role=\"button\"]")){e.preventDefault();switchTab("items","attention")}});document.addEventListener("click",e=>{
   const backdrop=e.target.closest("#modalBackdrop");if(backdrop&&e.target===backdrop){closeModal();return}
   const preset=e.target.closest("[data-preset]");if(preset){openAdd(preset.dataset.preset);return}
   const snoozeBtn=e.target.closest("[data-snooze]");if(snoozeBtn){snooze(snoozeBtn.dataset.id,Number(snoozeBtn.dataset.snooze));return}
@@ -270,7 +293,8 @@ function bindGlobal(){document.addEventListener("click",e=>{
   const complete=e.target.closest("[data-complete]");if(complete){e.stopPropagation();toggleComplete(complete.dataset.complete);return}
   const open=e.target.closest("[data-open]");if(open){openDetail(open.dataset.open);return}
   const cat=e.target.closest(".category-chip");if(cat){view.category=cat.dataset.category;view.filter="all";render();return}
-  const stat=e.target.closest(".stat-card");if(stat){view.filter=stat.dataset.filter||"all";render();window.scrollTo({top:250,behavior:"smooth"});return}
+  const hero=e.target.closest(".hero-card");if(hero){switchTab("items","attention");return}
+  const stat=e.target.closest(".stat-card");if(stat){switchTab("items",stat.dataset.filter||"all");return}
   const agenda=e.target.closest("[data-agenda]");if(agenda){view.agenda=agenda.dataset.agenda;$$('[data-agenda]').forEach(x=>x.classList.toggle('active',x.dataset.agenda===view.agenda));renderAgenda();return}
   const itemFilter=e.target.closest("[data-item-filter]");if(itemFilter){view.filter=itemFilter.dataset.itemFilter;render();return}
   const homeAll=e.target.closest("#homeViewAll");if(homeAll){switchTab("items");return}
