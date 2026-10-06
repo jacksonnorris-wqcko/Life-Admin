@@ -30,6 +30,7 @@ plusCircle:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M
 };
 let state=loadState();
 let view={category:"all",filter:"attention",search:"",agenda:"today"};
+let calendarView={month:startOfMonth(today()),selected:dateKey(today())};
 function loadState(){try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&Array.isArray(s.items)){s.settings={notifications:false,...(s.settings||{})};s.items=s.items.map(i=>({...i,moneyType:i.moneyType||"expense",attachments:i.attachments||[],completed:!!i.completed,pinned:!!i.pinned,priority:i.priority||"normal",seriesId:i.seriesId||null}));s.events=Array.isArray(s.events)?s.events:[];return s}}catch{}return{name:"",items:[],events:[],settings:{notifications:false}}}
 function save(){localStorage.setItem(STORE,JSON.stringify(state));render()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
@@ -83,7 +84,20 @@ function calendarItemsForMonth(month){
     }
     while(d<=end&&guard++<1000){if(d>=start)out.push({kind:"item",id:i.id,date:dateKey(d),title:i.title,time:"",moneyType:i.moneyType,cost:i.cost,category:i.category,icon:cats[i.category]?.icon||"other"}); const n=nextOccurrenceDate(d,i.repeat);if(!n)break;d=n;}
   });
-  (state.events||[]).forEach(e=>{const d=dateObj(e.date);if(d>=start&&d<=end)out.push({kind:"event",id:e.id,date:e.date,title:e.title,time:e.time||"",eventType:e.type||"event",icon:e.type==="birthday"?"family":e.type==="appointment"?"calendar":"items"});});
+  (state.events||[]).forEach(e=>{
+    let d=dateObj(e.date); if(Number.isNaN(d.getTime()))return;
+    const repeat=e.repeat||"Doesn't repeat";
+    if(repeat==="Doesn't repeat"){
+      if(d>=start&&d<=end)out.push({kind:"event",id:e.id,date:dateKey(d),title:e.title,time:e.time||"",eventType:e.type||"event",icon:e.type==="birthday"?"family":e.type==="appointment"?"calendar":"items"});
+      return;
+    }
+    let guard=0;
+    while(d<start&&guard++<1000){const n=nextOccurrenceDate(d,repeat);if(!n)break;d=n;}
+    while(d<=end&&guard++<1000){
+      if(d>=start)out.push({kind:"event",id:e.id,date:dateKey(d),title:e.title,time:e.time||"",eventType:e.type||"event",icon:e.type==="birthday"?"family":e.type==="appointment"?"calendar":"items"});
+      const n=nextOccurrenceDate(d,repeat);if(!n)break;d=n;
+    }
+  });
   return out.sort((a,b)=>(a.date+b.time).localeCompare(b.date+a.time));
 }
 function nextOccurrenceDate(d,repeat){const x=new Date(d);if(repeat==="Weekly")x.setDate(x.getDate()+7);else if(repeat==="Fortnightly")x.setDate(x.getDate()+14);else if(repeat==="Monthly")return addMonths(x,1);else if(repeat==="Every 3 months")return addMonths(x,3);else if(repeat==="Every 6 months")return addMonths(x,6);else if(repeat==="Yearly")return addYears(x,1);else return null;return x}
