@@ -3,53 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#f4f6f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Life Admin</title>
+<title>Life Admin V4</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="styles.css?v=3201">
-<style id="critical-svg-style">
-svg{fill:none !important;stroke:currentColor !important;stroke-width:1.8 !important;stroke-linecap:round !important;stroke-linejoin:round !important;vector-effect:non-scaling-stroke !important}
-svg circle,svg rect{fill:none !important}
+<link rel="stylesheet" href="styles.css?v=4001">
+<style>
+svg{fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;vector-effect:non-scaling-stroke!important}
+svg circle,svg rect{fill:none!important}
 </style>
 </head>
 <body>
 <div class="app-shell">
 <header class="topbar">
-  <div>
-    <div class="eyebrow">LIFE ADMIN</div>
-    <h1>Good morning<span id="userName"></span></h1>
-  </div>
+  <div><div class="eyebrow">LIFE ADMIN</div><h1>Good morning<span id="userName"></span></h1></div>
   <button type="button" class="icon-btn" id="settingsBtn" aria-label="Settings" data-icon="settings"></button>
 </header>
-
 <main>
   <section class="hero-card">
     <div class="hero-top">
-      <div>
-        <span class="hero-label">YOUR LIFE ADMIN</span>
-        <div class="score-row"><strong id="score">100%</strong><span id="scoreText">Under control</span></div>
-      </div>
+      <div><span class="hero-label">YOUR LIFE ADMIN</span><div class="score-row"><strong id="score">100%</strong><span id="scoreText">Under control</span></div></div>
       <div class="ring" id="scoreRing"><span id="ringValue">100</span></div>
     </div>
     <div class="progress"><span id="scoreProgress"></span></div>
-    <p id="scoreDetail">Nothing urgent.</p>
+    <p id="scoreDetail">Nothing added yet — you're all caught up.</p>
   </section>
 
   <section class="stats-grid">
     <button type="button" class="stat-card" data-filter="overdue"><span class="stat-icon danger" data-icon="warning"></span><b id="overdueCount">0</b><small>Overdue</small></button>
     <button type="button" class="stat-card" data-filter="soon"><span class="stat-icon warning" data-icon="calendar"></span><b id="soonCount">0</b><small>Due soon</small></button>
-    <button type="button" class="stat-card" data-filter="all"><span class="stat-icon good" data-icon="check"></span><b id="completeCount">0</b><small>Completed</small></button>
-    <button type="button" class="stat-card" data-filter="cost"><span class="stat-icon blue" data-icon="money"></span><b id="costCount">$0</b><small>Outgoing soon</small></button>
-    <button type="button" class="stat-card" data-filter="income"><span class="stat-icon income" data-icon="income"></span><b id="incomeCount">$0</b><small>Incoming soon</small></button>
+    <button type="button" class="stat-card" data-filter="completed"><span class="stat-icon good" data-icon="check"></span><b id="completeCount">0</b><small>Completed</small></button>
+    <button type="button" class="stat-card" data-filter="cost"><span class="stat-icon blue" data-icon="money"></span><b id="costCount">$0</b><small>Outgoing</small></button>
+    <button type="button" class="stat-card" data-filter="income"><span class="stat-icon income" data-icon="income"></span><b id="incomeCount">$0</b><small>Incoming</small></button>
   </section>
 
-  <section class="search-wrap">
-    <span data-icon="search"></span>
-    <input id="searchInput" placeholder="Search your life admin..." autocomplete="off">
-    <button id="clearSearch" class="clear-search hidden" aria-label="Clear search" data-icon="close"></button>
-  </section>
+  <section class="search-wrap"><span data-icon="search"></span><input id="searchInput" placeholder="Search your life admin..." autocomplete="off"><button type="button" id="clearSearch" class="clear-search hidden" aria-label="Clear search" data-icon="close"></button></section>
 
   <section class="category-strip" id="categoryStrip">
     <button type="button" class="category-chip active" data-category="all"><span data-icon="grid"></span>All</button>
@@ -62,20 +51,21 @@ svg circle,svg rect{fill:none !important}
     <button type="button" class="category-chip" data-category="income"><span data-icon="income"></span>Income</button>
   </section>
 
-  <section class="section-head">
-    <div><h2 id="listTitle">Needs attention</h2><p id="listSubtitle">Things coming up soon</p></div>
-    <button type="button" class="text-btn" id="viewAllBtn">View all</button>
+  <section class="agenda-card">
+    <div class="agenda-head"><div><span class="mini-label">WHAT'S NEXT</span><strong id="agendaCount">Nothing due</strong></div><div class="segmented"><button type="button" class="active" data-agenda="today">Today</button><button type="button" data-agenda="week">7 days</button></div></div>
+    <div id="agendaList" class="agenda-list"></div>
   </section>
+
+  <section class="section-head"><div><h2 id="listTitle">Needs attention</h2><p id="listSubtitle">Things coming up soon</p></div><button type="button" class="text-btn" id="viewAllBtn">View all</button></section>
   <section id="itemList" class="item-list"></section>
 
-  <section class="cost-card">
-    <div><div><span class="mini-label">UPCOMING COSTS</span><strong id="upcomingCost">$0</strong></div><span data-icon="chart"></span></div>
-    <div class="cost-breakdown"><span><b id="monthCost">$0</b><small>next 30 days</small></span><span><b id="yearCost">$0</b><small>next 12 months</small></span></div>
+  <section class="cashflow-card">
+    <div class="cashflow-top"><div><span class="mini-label">30-DAY CASHFLOW</span><strong id="cashflowNet">$0</strong><small id="cashflowLabel">No money scheduled</small></div><span class="cashflow-icon" data-icon="chart"></span></div>
+    <div class="cashflow-bars"><div><span><b id="cashIn">$0</b><small>Incoming</small></span><i class="bar-track"><em id="inBar"></em></i></div><div><span><b id="cashOut">$0</b><small>Outgoing</small></span><i class="bar-track"><em id="outBar"></em></i></div></div>
   </section>
-  <section class="income-card">
-    <div class="income-top"><div><span class="mini-label">INCOMING MONEY</span><strong id="incomingTotal">$0</strong></div><span data-icon="income"></span></div>
-    <div class="income-breakdown"><span><b id="weeklyIncome">$0</b><small>weekly</small></span><span><b id="monthlyIncome">$0</b><small>monthly</small></span><span><b id="annualIncome">$0</b><small>annual</small></span></div>
-  </section>
+
+  <section class="cost-card"><div><div><span class="mini-label">UPCOMING COSTS</span><strong id="upcomingCost">$0</strong></div><span data-icon="chart"></span></div><div class="cost-breakdown"><span><b id="monthCost">$0</b><small>next 30 days</small></span><span><b id="yearCost">$0</b><small>next 12 months</small></span></div></section>
+  <section class="income-card"><div class="income-top"><div><span class="mini-label">INCOMING MONEY</span><strong id="incomingTotal">$0</strong></div><span data-icon="income"></span></div><div class="income-breakdown"><span><b id="weeklyIncome">$0</b><small>weekly</small></span><span><b id="monthlyIncome">$0</b><small>monthly</small></span><span><b id="annualIncome">$0</b><small>annual</small></span></div></section>
 </main>
 
 <nav class="bottom-nav">
@@ -86,9 +76,8 @@ svg circle,svg rect{fill:none !important}
   <button type="button" class="nav-item" data-tab="settings"><span class="nav-icon" data-icon="settings"></span>Settings</button>
 </nav>
 </div>
-
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" hidden>
-<script src="app.js?v=3201" defer></script>
+<script src="app.js?v=4001" defer></script>
 </body>
 </html>

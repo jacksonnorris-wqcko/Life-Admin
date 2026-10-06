@@ -1,9 +1,1 @@
-{
-  "name":"Life Admin",
-  "short_name":"Life Admin",
-  "start_url":".",
-  "display":"standalone",
-  "background_color":"#f4f6f8",
-  "theme_color":"#111827",
-  "description":"A simple personal life administration dashboard."
-}
+{"name":"Life Admin","short_name":"Life Admin","start_url":"./","display":"standalone","background_color":"#f4f6f8","theme_color":"#2563eb","icons":[]}
