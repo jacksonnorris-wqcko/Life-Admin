@@ -1,6 +1,6 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const APP_VERSION="9.8";
+const APP_VERSION="9.9";
 const APP_CHANNEL="Alpha";
 const STORE="lifeAdminV2";
 const ATTENTION_DAYS=0;
@@ -249,7 +249,8 @@ function bindCalendarForm(existing){$("#close").onclick=closeModal;$("#cancel").
 function render(){
   const incomingChanged=normalizeIncomingItems();
   if(incomingChanged)localStorage.setItem(STORE,JSON.stringify(state));
-  $("#userName").textContent=state.name?", "+esc(state.name):"";
+  const activeTab=document.querySelector(".nav-item.active")?.dataset.tab||"home";
+  $("#userName").textContent=activeTab==="home"&&state.name?", "+esc(state.name):"";
   updateGreeting();
   const active=state.items.filter(i=>!i.completed&&i.moneyType!=="income");
   const activeMoney=state.items.filter(i=>!i.completed);

@@ -1,4 +1,4 @@
-# Life Admin V9.8 Alpha
+# Life Admin V9.9 Alpha
 
 # Life Admin V9.3 Alpha
 
@@ -38,7 +38,7 @@ V8.4.2 changes: redesigned the home status card to remove the misleading percent
 - Version display is V9.6 Alpha.
 
 
-## V9.8
+## V9.9
 - Added a real local Document Vault using IndexedDB for persistent photos and files.
 - Added document categories: Bills, Receipts, Insurance, Warranties, Personal and Other.
 - Added multi-file upload, optional item linking, image/PDF preview, open-file support and delete.
@@ -46,5 +46,8 @@ V8.4.2 changes: redesigned the home status card to remove the misleading percent
 - JSON backups continue to cover Life Admin data; document files remain local to the device for now.
 
 
-## V9.8 — Linked Document Relationships
+## V9.9 — Linked Document Relationships
 Documents in the vault can now be linked to Life Admin items as a true two-way relationship. Linked vault documents appear in an item's Attachments section, can be opened from the item, and can be unlinked without deleting the document. The Attach action now opens the document picker, with an option to add a new document directly linked to the current item.
+
+
+V9.9 visual polish: cleaner calendar presentation, refined interactive states, theme-aware subtle shadows, and the saved user name is shown only on the Home header (not Calendar/Items/Money/More).

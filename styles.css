@@ -481,3 +481,25 @@ body,.bottom-nav,.modal,.icon-btn,.stat-card,.agenda-card,.home-tile,.item,.cale
 
 /* V9.8 linked document relationships */
 .attachment-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.attachment-count{font-size:10px;color:var(--muted);font-weight:700}.document-attachment{padding:6px 8px}.attachment-open{display:flex;align-items:center;gap:9px;min-width:0;flex:1;background:transparent;text-align:left;color:inherit}.attachment-open>svg{width:18px;height:18px;color:var(--accent);flex:none}.attachment-open span{min-width:0}.attachment-open b,.attachment-open small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.attachment-open b{font-size:11px}.attachment-open small{font-size:9px;color:var(--muted);margin-top:2px}.attachment-unlink{font-size:9px;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px;flex:none}.link-document-row{cursor:pointer}.link-document-row:hover{background:var(--card)}
+
+
+/* V9.9 — final visual polish */
+.topbar{border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);}
+.brand-lockup .brand-mark{box-shadow:0 4px 12px color-mix(in srgb,var(--text) 12%,transparent);}
+.calendar-toolbar{align-items:center;}
+.calendar-toolbar>div{text-align:center;min-width:0;}
+.calendar-toolbar .mini-label{letter-spacing:.13em;}
+.calendar-card{border:1px solid color-mix(in srgb,var(--line) 72%,transparent);}
+.cal-day{border:1px solid transparent;transition:background-color .14s ease,border-color .14s ease,transform .14s ease;}
+.cal-day:hover{background:var(--surface-muted);}
+.cal-day.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-soft);}
+.cal-day.today .cal-number{box-shadow:0 0 0 2px var(--accent-soft);}
+.calendar-day-head{padding-top:4px;}
+.calendar-day-list:empty{display:none;}
+.calendar-add{box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 12%,transparent);transition:transform .14s ease,box-shadow .14s ease;}
+.calendar-add:active{transform:translateY(1px);box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 10%,transparent);}
+.document-tab{transition:background-color .14s ease,border-color .14s ease,color .14s ease,transform .14s ease;}
+.document-tab:active{transform:scale(.97);}
+.document-open,.attachment-open{cursor:pointer;}
+.modal-header .close{flex:none;}
+.status-badge.needs-attention{background:var(--danger-soft)!important;color:var(--danger)!important;}
